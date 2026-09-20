@@ -19,7 +19,7 @@ func Create() {
 
 	// Create new required inputs.
 	inp := input.NewInputs(
-		*scanner,
+		scanner,
 		[]domain.Field{"Title", "Description"},
 	)
 	input.Collect(inp) // Collect inputs from user.

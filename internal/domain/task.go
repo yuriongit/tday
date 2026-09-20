@@ -25,7 +25,7 @@ type FieldValue string
 Input defines the structure of task's input.
 */
 type Input struct {
-	Scanner bufio.Scanner
+	Scanner *bufio.Scanner
 	Fields  []Field
 	Values  []FieldValue
 }
