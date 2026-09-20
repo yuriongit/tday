@@ -10,37 +10,20 @@ import (
 	"github.com/spf13/cobra"
 )
 
-
-
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "tday",
-	Short: `TDay: A to-do CLI tool that actually makes me look at my
-to-do list.`,
-	Long: `TDay: A to-do CLI tool that actually makes me look at my
-to-do list. 
+	Short: `My personal task-managing CLI tool`,
+	Long: `TDay: A personal task-managing CLI tool for keep tracking of what I need
+done for the day. It's quick, feather-weight, and simply straightforward.
 
-It's quick, feather-weight, and simply straightforward.
-TDay is just to make all the CRUD-related operations for
-all my to-dos as simple as and efficent as possible.
-
----
-
-Because I don't want to deal with GUI-based to-do apps
-that are sluggish, inefficent and bloated: I've decided
-to create TDay as I like avoiding extensive mouse-use
-where I can.
-
-I should be able to: create, read, update, and delete a 
-to-do. Commands that I should be available to use:
-  tday new ""
-  tday ls
-  tday fix
-  tday rm
+I've decided to create TDay for multiple reasons. I find it critical to
+reduce as much extensive mouse-use where possible. Additionally, GUI-
+based task-managers are shipped with too much: distracting UIs, bloat, 
+a lack of simplicity, sluggishness, and a mouse-oriented UX. Tday is to
+make managing my tasks as simple and as straightfoward as it actually
+should be.
 `,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
