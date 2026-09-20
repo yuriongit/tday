@@ -1,5 +1,7 @@
 /*
-Copyright © 2026 NAME HERE <EMAIL ADDRESS>
+Package cmd holds all of TDay's commands
+
+Copyright © 2026 Yuri Okeren <yuri.dev44@outlook.com>
 */
 package cmd
 

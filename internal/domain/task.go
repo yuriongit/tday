@@ -1,42 +1,31 @@
+/*
+Package domain is responsible for business
+logic, pure data representation, and
+constants.
+*/
 package domain
 
 import (
 	"bufio"
-	"fmt"
 )
 
+/*
+Field is a branded type of type string.
+It defines the type of a Field's value.
+*/
 type Field string
+
+/*
+FieldValue is a branded type of type string.
+It defines the type of a Field's value.
+*/
 type FieldValue string
 
-type Task struct {
-	title Field
-	desc  Field
-}
-
+/*
+Input defines the structure of task's input.
+*/
 type Input struct {
 	Scanner bufio.Scanner
 	Fields  []Field
 	Values  []FieldValue
-}
-
-func NewInputs(
-	scanner bufio.Scanner,
-	fields []Field,
-) *Input {
-	return &Input{
-		Scanner: scanner,
-		Fields:  fields,
-		Values:  []FieldValue{},
-	}
-}
-
-func (i *Input) Collect() {
-	for _, v := range i.Fields {
-		// Collect user input
-		fmt.Printf("? — %s:\n  > ", v)
-		i.Scanner.Scan()
-
-		val := FieldValue(i.Scanner.Text())
-		i.Values = append(i.Values, val)
-	}
 }
