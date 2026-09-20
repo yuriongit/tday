@@ -32,7 +32,7 @@ the fields listed in Input
 func Collect(i *domain.Input) {
 	for _, v := range i.Fields {
 		// Collect user input
-		fmt.Printf("? — %s:\n  > ", v)
+		fmt.Printf("? %s:\n  > ", v)
 		i.Scanner.Scan()
 
 		val := domain.FieldValue(i.Scanner.Text())

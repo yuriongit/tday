@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
+	"time"
 
 	"github.com/yurongit/tday/internal/domain"
 )
@@ -36,14 +37,20 @@ func TaskCreation(i *domain.Input) {
 	clearTerminal()
 	fmt.Println("...")
 	fmt.Println("New task created,\nTask details include:")
-	fmt.Println("——————")
+	
+	fmt.Println("———————")
+	fmt.Printf(
+  	"%s | %s\n",
+    time.Now().Format("03:04 PM"),
+  	time.Now().Format("Jan 2, 2006"),
+	)
 
 	for idx, v := range i.Values {
-		fmt.Printf("%s:\n%s> %s%s%s\n",
-			i.Fields[idx],
-			domain.Indent,
+		fmt.Printf("• %s:\n  > %s%s%s\n",
+ 			i.Fields[idx],
 			domain.QuoteSymbol,
 			v,
 			domain.QuoteSymbol)
 	}
+	fmt.Println("———————")
 }
