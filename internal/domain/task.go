@@ -30,13 +30,13 @@ func NewInputs(
 	}
 }
 
-func (i *Input) Collect() () {
+func (i *Input) Collect() {
 	for _, v := range i.Fields {
-	  // Collect user input
+		// Collect user input
 		fmt.Printf("? — %s:\n  > ", v)
 		i.Scanner.Scan()
-		
-  	val := FieldValue(i.Scanner.Text())	
+
+		val := FieldValue(i.Scanner.Text())
 		i.Values = append(i.Values, val)
 	}
 }

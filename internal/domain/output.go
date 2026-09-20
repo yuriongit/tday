@@ -8,16 +8,15 @@ import (
 )
 
 type Output struct {
-  fields []Field
-  fieldValues []FieldValue
+	fields      []Field
+	fieldValues []FieldValue
 }
 
-func NewOutput(
-) *Output {
-  return &Output{
-    fields: []Field{},
-    fieldValues: []FieldValue{},
-  }
+func NewOutput() *Output {
+	return &Output{
+		fields:      []Field{},
+		fieldValues: []FieldValue{},
+	}
 }
 
 func clearTerminal() {
@@ -34,20 +33,20 @@ func clearTerminal() {
 }
 
 func (o *Output) TaskCreation(
-  Fields []Field, 
-  FieldValues []FieldValue,
-) { 
-  clearTerminal()
-  fmt.Println("...")
+	Fields []Field,
+	FieldValues []FieldValue,
+) {
+	clearTerminal()
+	fmt.Println("...")
 	fmt.Println("New task created,\nTask details include:")
 	fmt.Println("——————")
-	
+
 	for idx, v := range FieldValues {
-    fmt.Printf("%s:\n%s> %s%s%s\n", 
-      Fields[idx], 
-      Indent, 
-      QuoteSymbol, 
-      v, 
-      QuoteSymbol)
-  }
+		fmt.Printf("%s:\n%s> %s%s%s\n",
+			Fields[idx],
+			Indent,
+			QuoteSymbol,
+			v,
+			QuoteSymbol)
+	}
 }

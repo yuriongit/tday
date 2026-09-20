@@ -13,7 +13,7 @@ import (
 var newCmd = &cobra.Command{
 	Use:   "new",
 	Short: "creates a new task",
-	Long: `TODO: Implement later`,
+	Long:  `TODO: Implement later`,
 	Run: func(cmd *cobra.Command, args []string) {
 		task.Create()
 	},
