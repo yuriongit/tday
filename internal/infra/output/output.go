@@ -11,7 +11,7 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/yurongit/tday/internal/domain"
+	"github.com/yuriongit/tday/internal/domain"
 )
 
 func clearTerminal() {
@@ -30,13 +30,13 @@ func clearTerminal() {
 }
 
 /*
-TaskCreation outputs the created task and extra
+CreatedTask outputs the created task and extra
 relative information to the task.
 */
-func TaskCreation(i *domain.Input) {
+func CreatedTask(t *domain.Task) {
 	clearTerminal()
 	fmt.Println("...")
-	fmt.Println("New task created,\nTask details include:")
+	fmt.Println("New task created!\nTask details include:")
 
 	fmt.Println("———————")
 	fmt.Printf(
@@ -45,13 +45,12 @@ func TaskCreation(i *domain.Input) {
 		time.Now().Format("Jan 2, 2006"),
 	)
 
-	for idx, v := range i.Values {
+	for idx, v := range t.Values {
 		fmt.Printf("• %s:\n  > %s%s%s\n",
-			i.Fields[idx],
+			t.Fields[idx],
 			domain.QuoteSymbol,
 			v,
 			domain.QuoteSymbol)
 	}
 	fmt.Println("———————")
 }
-

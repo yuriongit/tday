@@ -7,7 +7,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/yurongit/tday/internal/task"
+	"github.com/yuriongit/tday/internal/task"
 )
 
 // newCmd represents the new command

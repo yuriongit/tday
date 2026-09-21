@@ -1,4 +1,4 @@
-module github.com/yurongit/tday
+module github.com/yuriongit/tday
 
 go 1.27.1
 

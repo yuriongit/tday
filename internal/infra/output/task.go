@@ -4,13 +4,13 @@ import (
 	"bufio"
 	"fmt"
 
-	"github.com/yurongit/tday/internal/domain"
+	"github.com/yuriongit/tday/internal/domain"
 )
 
 func RequestTaskInput(
-  scanner *bufio.Scanner,
-  field domain.Field,
+	scanner *bufio.Scanner,
+	field domain.TaskField,
 ) {
-  fmt.Printf("? %s:\n  > ", field)
-  scanner.Scan()
+	fmt.Printf("? %s:\n  > ", field)
+	scanner.Scan()
 }

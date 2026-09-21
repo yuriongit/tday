@@ -7,22 +7,34 @@ import (
 	"bufio"
 	"os"
 
-	"github.com/yurongit/tday/internal/domain"
-	"github.com/yurongit/tday/internal/infra/input"
-	"github.com/yurongit/tday/internal/infra/output"
+	"github.com/yuriongit/tday/internal/domain"
+	"github.com/yuriongit/tday/internal/infra/input"
+	"github.com/yuriongit/tday/internal/infra/output"
+)
+
+var (
+	taskFields = []domain.TaskField{
+		"Label",
+		"Title",
+		"Description",
+		"Due Date",
+	}
 )
 
 // Create creates a new task.
 func Create() {
-	// Create scanner for inputs.
-	scanner := bufio.NewScanner(os.Stdin)
+	inpHandler := NewTaskInputHandler()         // Create new required inputs.
+	task := input.CollectTaskFields(inpHandler) // Collect inputs from user.
+	output.CreatedTask(task)                    // Output created task.
+}
 
-	// Create new required inputs.
-	inp := input.NewInputs(
-		scanner,
-		[]domain.Field{"Label", "Title", "Description"},
-	)
-	input.Collect(inp) // Collect inputs from user.
-
-	output.TaskCreation(inp) // Output created task.
+/*
+NewTaskInputHandler instantiates a new task .
+*/
+func NewTaskInputHandler() *domain.TaskInputHandler {
+	return &domain.TaskInputHandler{
+		Scanner: bufio.NewScanner(os.Stdin),
+		Fields:  taskFields,
+		Values:  []domain.TaskFieldValue{},
+	}
 }

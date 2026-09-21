@@ -10,22 +10,28 @@ import (
 )
 
 /*
-Field is a branded type of type string.
-It defines the type of a Field's value.
+TaskField is a branded type of type string.
+It defines the type of a TaskField's value.
 */
-type Field string
+type TaskField string
 
 /*
-FieldValue is a branded type of type string.
+TaskFieldValue is a branded type of type string.
 It defines the type of a Field's value.
 */
-type FieldValue string
+type TaskFieldValue string
 
 /*
-Input defines the structure of task's input.
+TaskInputHandler defines the structure of task's input.
 */
-type Input struct {
+type TaskInputHandler struct {
 	Scanner *bufio.Scanner
-	Fields  []Field
-	Values  []FieldValue
+	Fields  []TaskField
+	Values  []TaskFieldValue
+}
+
+type Task struct {
+	CreationDate string
+	Fields       []TaskField
+	Values       []TaskFieldValue
 }
