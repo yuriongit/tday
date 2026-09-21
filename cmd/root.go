@@ -20,7 +20,7 @@ done for the day. It's quick, feather-weight, and simply straightforward.
 
 I've decided to create TDay for multiple reasons. I find it critical to
 reduce as much extensive mouse-use where possible. Additionally, GUI-
-based task-managers are shipped with too much: distracting UIs, bloat, 
+based task-managers are shipped with too much: Distracting UIs, bloat, 
 a lack of simplicity, sluggishness, and a mouse-oriented UX. Tday is to
 make managing my tasks as simple and as straightfoward as it actually
 should be.
