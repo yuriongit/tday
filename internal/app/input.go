@@ -1,3 +1,7 @@
+/*
+Package app contains the app's core
+types and dependencies.
+*/
 package app
 
 import (
@@ -6,14 +10,16 @@ import (
 )
 
 /*
-TaskInputHandler defines the structure of task's input.
+TaskInputHandler defines the structure of
+task's input.
 */
 type TaskInputHandler struct {
 	Scanner *bufio.Scanner
 }
 
 /*
-NewTaskInputHandler instantiates a new task .
+NewInputHandler instantiates a new
+TaskInputHandler.
 */
 func NewInputHandler() *TaskInputHandler {
 	return &TaskInputHandler{

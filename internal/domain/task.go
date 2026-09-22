@@ -12,17 +12,49 @@ import (
 	"github.com/yuriongit/tday/internal/app"
 )
 
+/*
+ID represents a unique identifier used by
+the domain.
+*/
 type ID string
 
+/*
+TaskFieldType identifies the type of
+field a task can have.
+*/
 type TaskFieldType string
 
 const (
-	LabelField       TaskFieldType = "label"
-	TitleField       TaskFieldType = "title"
+	/*
+	  LabelField identifies the label field	used
+	  to categorize a task.
+	*/
+	LabelField TaskFieldType = "label"
+
+	/*
+	  TitleField identifies the title field
+	 	used to name a task.
+	*/
+	TitleField TaskFieldType = "title"
+
+	/*
+	  DescriptionField identifies the
+	  description field used to provide task
+	  details.
+	*/
 	DescriptionField TaskFieldType = "description"
-	DueAtField       TaskFieldType = "due_at"
+
+	/*
+		DueAtField identifies the due date field
+		used to set when a task is due.
+	*/
+	DueAtField TaskFieldType = "due_at"
 )
 
+/*
+FieldDefinition describes a field and
+how its value should be validated.
+*/
 type FieldDefinition struct {
 	ID       TaskFieldType
 	Name     string
@@ -31,6 +63,10 @@ type FieldDefinition struct {
 	Validate func(string) error
 }
 
+/*
+AllFields contains the fields that can
+be used when creating a task.
+*/
 var AllFields = []FieldDefinition{
 	{
 		ID:       LabelField,
@@ -62,19 +98,34 @@ var AllFields = []FieldDefinition{
 	},
 }
 
+/*
+Metadata contains information shared
+across domain objects.
+*/
 type Metadata struct {
 	UUID      app.ID
 	CreatedAt time.Time
 }
 
+/*
+TaskInputData contains the values
+provided for a task's fields.
+*/
 type TaskInputData map[TaskFieldType]any
 
+/*
+Task represents a task and its
+associated data.
+*/
 type Task struct {
 	Metadata
 	InputData *TaskInputData
 }
 
-// Helper to get a field def by ID
+/*
+GetFieldDef returns the definition
+for a field by its ID.
+*/
 func GetFieldDef(id TaskFieldType) *FieldDefinition {
 	for i := range AllFields {
 		if AllFields[i].ID == id {

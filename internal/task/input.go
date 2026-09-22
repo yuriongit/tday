@@ -1,5 +1,5 @@
 /*
-Package input is responsible for all input.
+Package task is responsible for all input.
 */
 package task
 
@@ -11,10 +11,11 @@ import (
 )
 
 /*
-collectTaskInputs collects user input to fill out.
-the task's fields. In the process of collecting this
-data, each field's value is updated through direct
-access to the domain.
+collectTaskInputs collects user input to
+fill out the task's fields. In the process
+of collecting this data, each field's value
+is updated through direct access to the
+domain.
 */
 func collectTaskInputs(inputHandler *app.TaskInputHandler) domain.TaskInputData {
 	scanner := inputHandler.Scanner

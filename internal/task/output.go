@@ -1,5 +1,5 @@
 /*
-Package output is responsible for streaming output
+Package task is responsible for streaming output
 to the terminal.
 */
 package task
