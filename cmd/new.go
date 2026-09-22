@@ -17,10 +17,10 @@ var newCmd = &cobra.Command{
 	Short: "creates a new task",
 	Long:  `TODO: Implement later`,
 	Run: func(_ *cobra.Command, _ []string) {
-    app := app.InitApp()
-    inputHandler := app.TaskInputHandler
-    taskIDGen := app.TaskIDGenerator
-    
+		app := app.InitApp()
+		inputHandler := app.TaskInputHandler
+		taskIDGen := app.TaskIDGenerator
+
 		task.Create(inputHandler, taskIDGen)
 	},
 }

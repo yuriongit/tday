@@ -1,13 +1,13 @@
 package app
 
 type App struct {
-  TaskInputHandler *TaskInputHandler
-  TaskIDGenerator *TaskIDGenerator
+	TaskInputHandler *TaskInputHandler
+	TaskIDGenerator  *TaskIDGenerator
 }
 
 func InitApp() *App {
-  return &App{
-    TaskInputHandler: NewInputHandler(),
-    TaskIDGenerator: &TaskIDGenerator{},
-  }
+	return &App{
+		TaskInputHandler: NewInputHandler(),
+		TaskIDGenerator:  &TaskIDGenerator{},
+	}
 }

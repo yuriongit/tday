@@ -12,13 +12,13 @@ import (
 
 // Create creates and saves a new task (persistence planned).
 func Create(
-  inputHandler *app.TaskInputHandler, 
-  taskIDGen *app.TaskIDGenerator,
+	inputHandler *app.TaskInputHandler,
+	taskIDGen *app.TaskIDGenerator,
 ) {
-  // Collect inputs from user.
+	// Collect inputs from user.
 	task := newTask(inputHandler, taskIDGen)
 	// Output created task.
-	outputNewTask(task) 
+	outputNewTask(task)
 }
 
 func newTask(
@@ -29,7 +29,7 @@ func newTask(
 	taskInputs := collectTaskInputs(inputHandler)
 
 	return &domain.Task{
-		UUID:        id,
+		UUID:      id,
 		CreatedAt: time.Now(),
 		InputData: &taskInputs,
 	}

@@ -52,20 +52,20 @@ func outputNewTask(t *domain.Task) {
 
 	fmt.Println("\nData:")
 	for _, field := range domain.AllFields {
-  	v, exists := (*t.InputData)[field.ID]
-   
+		v, exists := (*t.InputData)[field.ID]
+
 		if !exists || v == "" {
-		  continue
+			continue
 		}
-		
+
 		fmt.Printf("• %s:\n", field.Name)
-		
+
 		if field.ID == "due_at" {
-  		fmt.Printf("  > %v\n", v)
+			fmt.Printf("  > %v\n", v)
 		} else {
-     	fmt.Printf("  > %s%v%s\n", domain.QuoteSymbol, v, domain.QuoteSymbol)
+			fmt.Printf("  > %s%v%s\n", domain.QuoteSymbol, v, domain.QuoteSymbol)
 		}
-	} 
-	
+	}
+
 	fmt.Println("————————————————————————————")
 }

@@ -17,60 +17,61 @@ type ID string
 type TaskFieldType string
 
 const (
-  LabelField TaskFieldType = "label"
-  TitleField TaskFieldType = "title"
-  DescriptionField TaskFieldType = "description"
-  DueAtField TaskFieldType = "due_at"
+	LabelField       TaskFieldType = "label"
+	TitleField       TaskFieldType = "title"
+	DescriptionField TaskFieldType = "description"
+	DueAtField       TaskFieldType = "due_at"
 )
 
 type FieldDefinition struct {
-  ID  TaskFieldType
-  Name  string
-  Type string
-  Required bool
-  Validate func(string) (error)
+	ID       TaskFieldType
+	Name     string
+	Type     string
+	Required bool
+	Validate func(string) error
 }
+
 var AllFields = []FieldDefinition{
-  {
-    ID: LabelField,
-    Name: "Label",
-    Type: "string",
-    Required: true,
-    Validate: validateLabel,
-  },
-  {
-    ID: TitleField,
-    Name: "Title",
-    Type: "string",
-    Required: true,
-    Validate: validateTitle,
-  },
-  {
-    ID: DescriptionField,
-    Name: "Description",
-    Type: "string",
-    Required: false,
-    Validate: validateDescription,
-  },
-  {
-    ID: DueAtField,
-    Name: "Due at",
-    Type: "uint8",
-    Required: true,
-    Validate: validateDueAt,
-  },
+	{
+		ID:       LabelField,
+		Name:     "Label",
+		Type:     "string",
+		Required: true,
+		Validate: validateLabel,
+	},
+	{
+		ID:       TitleField,
+		Name:     "Title",
+		Type:     "string",
+		Required: true,
+		Validate: validateTitle,
+	},
+	{
+		ID:       DescriptionField,
+		Name:     "Description",
+		Type:     "string",
+		Required: false,
+		Validate: validateDescription,
+	},
+	{
+		ID:       DueAtField,
+		Name:     "Due at",
+		Type:     "uint8",
+		Required: true,
+		Validate: validateDueAt,
+	},
 }
 
 type Metadata struct {
-  UUID app.ID 
-  CreatedAt time.Time
+	UUID      app.ID
+	CreatedAt time.Time
 }
 
 type TaskInputData map[TaskFieldType]any
 
 type Task struct {
-  Metadata
-  InputData *TaskInputData
+	Metadata
+	InputData *TaskInputData
 }
 
 // Helper to get a field def by ID
@@ -113,10 +114,10 @@ func validateDueAt(s string) error {
 			return nil
 		}
 	}
-  
+
 	return fmt.Errorf(
-	"invalid time format. \nFormats include: '%s' and '%s'", 
-	TimeLayouts[0],
-	TimeLayouts[1],
+		"invalid time format. \nFormats include: '%s' and '%s'",
+		TimeLayouts[0],
+		TimeLayouts[1],
 	)
 }
