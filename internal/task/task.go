@@ -4,37 +4,33 @@ Package task offers (CRUD) functionality for tasks.
 package task
 
 import (
-	"bufio"
-	"os"
+	"time"
 
+	"github.com/yuriongit/tday/internal/app"
 	"github.com/yuriongit/tday/internal/domain"
-	"github.com/yuriongit/tday/internal/infra/input"
-	"github.com/yuriongit/tday/internal/infra/output"
 )
 
-var (
-	taskFields = []domain.TaskField{
-		"Label",
-		"Title",
-		"Description",
-		"Due Date",
-	}
-)
-
-// Create creates a new task.
-func Create() {
-	inpHandler := NewTaskInputHandler()         // Create new required inputs.
-	task := input.CollectTaskFields(inpHandler) // Collect inputs from user.
-	output.CreatedTask(task)                    // Output created task.
+// Create creates and saves a new task (persistence planned).
+func Create(
+  inputHandler *app.TaskInputHandler, 
+  taskIDGen *app.TaskIDGenerator,
+) {
+  // Collect inputs from user.
+	task := newTask(inputHandler, taskIDGen)
+	// Output created task.
+	outputNewTask(task) 
 }
 
-/*
-NewTaskInputHandler instantiates a new task .
-*/
-func NewTaskInputHandler() *domain.TaskInputHandler {
-	return &domain.TaskInputHandler{
-		Scanner: bufio.NewScanner(os.Stdin),
-		Fields:  taskFields,
-		Values:  []domain.TaskFieldValue{},
+func newTask(
+	inputHandler *app.TaskInputHandler,
+	taskIDGen *app.TaskIDGenerator,
+) *domain.Task {
+	id := taskIDGen.Generate()
+	taskInputs := collectTaskInputs(inputHandler)
+
+	return &domain.Task{
+		UUID:        id,
+		CreatedAt: time.Now(),
+		InputData: &taskInputs,
 	}
 }

@@ -10,3 +10,5 @@ import "github.com/yuriongit/tday/cmd"
 func main() {
 	cmd.Execute()
 }
+
+// Delete, Update, ReadOne, Read, ReadRange(x-y)
