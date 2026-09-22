@@ -7,7 +7,8 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/yurongit/tday/internal/task"
+	"github.com/yuriongit/tday/internal/app"
+	"github.com/yuriongit/tday/internal/task"
 )
 
 // newCmd represents the new command
@@ -16,7 +17,11 @@ var newCmd = &cobra.Command{
 	Short: "creates a new task",
 	Long:  `TODO: Implement later`,
 	Run: func(_ *cobra.Command, _ []string) {
-		task.Create()
+		app := app.InitApp()
+		inputHandler := app.TaskInputHandler
+		taskIDGen := app.TaskIDGenerator
+
+		task.Create(inputHandler, taskIDGen)
 	},
 }
 

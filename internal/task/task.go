@@ -4,25 +4,33 @@ Package task offers (CRUD) functionality for tasks.
 package task
 
 import (
-	"bufio"
-	"os"
+	"time"
 
-	"github.com/yurongit/tday/internal/domain"
-	"github.com/yurongit/tday/internal/infra/input"
-	"github.com/yurongit/tday/internal/infra/output"
+	"github.com/yuriongit/tday/internal/app"
+	"github.com/yuriongit/tday/internal/domain"
 )
 
-// Create creates a new task.
-func Create() {
-	// Create scanner for inputs.
-	scanner := bufio.NewScanner(os.Stdin)
+// Create creates and saves a new task (persistence planned).
+func Create(
+	inputHandler *app.TaskInputHandler,
+	taskIDGen *app.TaskIDGenerator,
+) {
+	// Collect inputs from user.
+	task := newTask(inputHandler, taskIDGen)
+	// Output created task.
+	outputNewTask(task)
+}
 
-	// Create new required inputs.
-	inp := input.NewInputs(
-		scanner,
-		[]domain.Field{"Label", "Title", "Description"},
-	)
-	input.Collect(inp) // Collect inputs from user.
+func newTask(
+	inputHandler *app.TaskInputHandler,
+	taskIDGen *app.TaskIDGenerator,
+) *domain.Task {
+	id := taskIDGen.Generate()
+	taskInputs := collectTaskInputs(inputHandler)
 
-	output.TaskCreation(inp) // Output created task.
+	return &domain.Task{
+		UUID:      id,
+		CreatedAt: time.Now(),
+		InputData: &taskInputs,
+	}
 }
