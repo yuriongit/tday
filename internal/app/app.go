@@ -11,6 +11,7 @@ by the application.
 type App struct {
 	TaskInputHandler *TaskInputHandler
 	TaskIDGenerator  *TaskIDGenerator
+	// Database         *Database
 }
 
 /*
