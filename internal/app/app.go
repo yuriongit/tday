@@ -20,7 +20,7 @@ the application dependencies.
 */
 func InitApp() *App {
 	return &App{
-		TaskInputHandler: NewInputHandler(),
+		TaskInputHandler: NewInputHandler(), // TODO: Rename to NewTaskInputHandler
 		TaskIDGenerator:  &TaskIDGenerator{},
 	}
 }
