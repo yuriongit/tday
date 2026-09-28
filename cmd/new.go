@@ -16,12 +16,12 @@ var newCmd = &cobra.Command{
 	Short: "creates a new task",
 	Long:  `TODO: Implement later`,
 	RunE: func(_ *cobra.Command, _ []string) error {
-    app := GetApp()
-    
-		return task.Create(app.Ctx, 
-  		app.TaskInputHandler,
-  		app.TaskIDGenerator,
-  		app.Database,
+		app := GetApp()
+
+		return task.Create(app.Ctx,
+			app.TaskInputHandler,
+			app.TaskIDGenerator,
+			app.Database,
 		)
 	},
 }

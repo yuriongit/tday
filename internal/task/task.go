@@ -13,7 +13,7 @@ import (
 
 // Create creates and saves a new task (persistence planned).
 func Create(
-  rootCtx context.Context, 
+	rootCtx context.Context,
 	inputHandler *domain.TaskInputHandler,
 	taskIDGen *domain.TaskIDGenerator,
 	db *domain.SupabaseDB,

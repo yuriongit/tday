@@ -32,7 +32,7 @@ type Database interface {
 
 // SupabaseDB implements the Database interface.
 type SupabaseDB struct {
-	Pool   *pgxpool.Pool
+	Pool *pgxpool.Pool
 }
 
 /*
@@ -71,9 +71,9 @@ func (db *SupabaseDB) newPool(tempCtx context.Context) error {
 	if err != nil {
 		return fmt.Errorf("config error: %w", err)
 	}
-	
-	ctx, cancel := context.WithTimeout(tempCtx, 5 * time.Second)
-  defer cancel()
+
+	ctx, cancel := context.WithTimeout(tempCtx, 5*time.Second)
+	defer cancel()
 
 	// Creates a connection pool.
 	pool, err := pgxpool.NewWithConfig(ctx, config)
@@ -97,9 +97,9 @@ func (db *SupabaseDB) newPool(tempCtx context.Context) error {
 
 // Ping is the health check for the database.
 func (db *SupabaseDB) Ping(rootCtx context.Context) error {
-	ctx, cancel := context.WithTimeout(rootCtx, 5 * time.Second)
-  defer cancel()
-  
+	ctx, cancel := context.WithTimeout(rootCtx, 5*time.Second)
+	defer cancel()
+
 	if err := db.Pool.Ping(ctx); err != nil {
 		return err
 	}
@@ -118,9 +118,9 @@ InsertTask inserts a new task into the
 database.
 */
 func (db *SupabaseDB) InsertTask(rootCtx context.Context, task *Task) error {
-  ctx, cancel := context.WithTimeout(rootCtx, 5 * time.Second)
-  defer cancel()
-  
+	ctx, cancel := context.WithTimeout(rootCtx, 5*time.Second)
+	defer cancel()
+
 	query, args := db.buildInsertQuery(task)
 
 	cmdTag, err := db.Pool.Exec(ctx, query, args...)
