@@ -1,8 +1,8 @@
 /*
-Package app contains the app's core
+Package domain contains the domain's core
 types and dependencies.
 */
-package app
+package domain
 
 import (
 	"uuid"

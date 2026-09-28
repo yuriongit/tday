@@ -8,15 +8,7 @@ package domain
 import (
 	"fmt"
 	"time"
-
-	"github.com/yuriongit/tday/internal/app"
 )
-
-/*
-ID represents a unique identifier used by
-the domain.
-*/
-type ID string
 
 /*
 TaskFieldType identifies the type of
@@ -103,7 +95,7 @@ Metadata contains information shared
 across domain objects.
 */
 type Metadata struct {
-	UUID      app.ID
+	UUID      ID
 	CreatedAt time.Time
 }
 

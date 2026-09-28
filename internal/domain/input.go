@@ -1,8 +1,8 @@
 /*
-Package app contains the app's core
+Package domain contains the domain's core
 types and dependencies.
 */
-package app
+package domain
 
 import (
 	"bufio"
@@ -18,10 +18,10 @@ type TaskInputHandler struct {
 }
 
 /*
-NewInputHandler instantiates a new
+NewTaskInputHandler instantiates a new
 TaskInputHandler.
 */
-func NewInputHandler() *TaskInputHandler {
+func NewTaskInputHandler() *TaskInputHandler {
 	return &TaskInputHandler{
 		Scanner: bufio.NewScanner(os.Stdin),
 	}
