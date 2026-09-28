@@ -7,7 +7,6 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/yuriongit/tday/internal/domain"
 	"github.com/yuriongit/tday/internal/task"
 )
 
@@ -17,15 +16,13 @@ var newCmd = &cobra.Command{
 	Short: "creates a new task",
 	Long:  `TODO: Implement later`,
 	RunE: func(_ *cobra.Command, _ []string) error {
-		app, err := domain.InitApp()
-		if err != nil {
-			return err
-		}
-		inputHandler := app.TaskInputHandler
-		taskIDGen := app.TaskIDGenerator
-		db := app.Database
-
-		return task.Create(inputHandler, taskIDGen, db)
+    app := GetApp()
+    
+		return task.Create(app.Ctx, 
+  		app.TaskInputHandler,
+  		app.TaskIDGenerator,
+  		app.Database,
+		)
 	},
 }
 

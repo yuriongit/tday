@@ -6,7 +6,6 @@ package domain
 
 import (
 	"context"
-	"time"
 )
 
 /*
@@ -17,6 +16,8 @@ type App struct {
 	TaskInputHandler *TaskInputHandler
 	TaskIDGenerator  *TaskIDGenerator
 	Database         *SupabaseDB
+	Ctx              context.Context
+	Cancel           context.CancelFunc
 }
 
 /*
@@ -24,16 +25,18 @@ InitApp creates and initializes
 the application's dependencies.
 */
 func InitApp() (*App, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)
-
-	db, err := NewSupabaseDB(ctx, cancel)
+	db, err := NewSupabaseDB(context.Background())
 	if err != nil {
 		return nil, err
 	}
+
+	rootCtx, rootCancel := context.WithCancel(context.Background())
 
 	return &App{
 		TaskInputHandler: NewTaskInputHandler(),
 		TaskIDGenerator:  &TaskIDGenerator{},
 		Database:         db,
+		Ctx:              rootCtx,
+		Cancel:           rootCancel,
 	}, nil
 }

@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
@@ -31,8 +32,6 @@ type Database interface {
 
 // SupabaseDB implements the Database interface.
 type SupabaseDB struct {
-	Ctx    context.Context
-	Cancel context.CancelFunc
 	Pool   *pgxpool.Pool
 }
 
@@ -40,13 +39,10 @@ type SupabaseDB struct {
 NewSupabaseDB instantiates a new SupabaseDB
 struct.
 */
-func NewSupabaseDB(
-	ctx context.Context,
-	cancel context.CancelFunc,
-) (*SupabaseDB, error) {
-	db := &SupabaseDB{Ctx: ctx, Cancel: cancel}
+func NewSupabaseDB(tempCtx context.Context) (*SupabaseDB, error) {
+	db := &SupabaseDB{}
 
-	if err := db.newPool(); err != nil {
+	if err := db.newPool(tempCtx); err != nil {
 		return nil, err
 	}
 
@@ -58,10 +54,10 @@ func NewSupabaseDB(
 // Connectivity operations
 
 // newPool creates the connection pool.
-func (db *SupabaseDB) newPool() error {
+func (db *SupabaseDB) newPool(tempCtx context.Context) error {
 	// Load environment variables from .env file.
 	if err := godotenv.Load(".env"); err != nil {
-		return fmt.Errorf("env load error: %s", err.Error())
+		return fmt.Errorf("env load error: %w", err)
 	}
 
 	// Retrieves DB_URI environment variable.
@@ -73,13 +69,16 @@ func (db *SupabaseDB) newPool() error {
 	// Creates a Postgres config.
 	config, err := pgxpool.ParseConfig(dbURI)
 	if err != nil {
-		return fmt.Errorf("config error: %s", err.Error())
+		return fmt.Errorf("config error: %w", err)
 	}
+	
+	ctx, cancel := context.WithTimeout(tempCtx, 5 * time.Second)
+  defer cancel()
 
 	// Creates a connection pool.
-	pool, err := pgxpool.NewWithConfig(db.Ctx, config)
+	pool, err := pgxpool.NewWithConfig(ctx, config)
 	if err != nil {
-		return fmt.Errorf("connection error: %s", err.Error())
+		return fmt.Errorf("connection error: %w", err)
 	}
 
 	/*
@@ -89,7 +88,7 @@ func (db *SupabaseDB) newPool() error {
 	db.Pool = pool
 
 	// Checks health of database via a ping.
-	if err := db.Ping(); err != nil {
+	if err := db.Ping(ctx); err != nil {
 		return err
 	}
 
@@ -97,8 +96,11 @@ func (db *SupabaseDB) newPool() error {
 }
 
 // Ping is the health check for the database.
-func (db *SupabaseDB) Ping() error {
-	if err := db.Pool.Ping(db.Ctx); err != nil {
+func (db *SupabaseDB) Ping(rootCtx context.Context) error {
+	ctx, cancel := context.WithTimeout(rootCtx, 5 * time.Second)
+  defer cancel()
+  
+	if err := db.Pool.Ping(ctx); err != nil {
 		return err
 	}
 
@@ -115,10 +117,13 @@ func (db *SupabaseDB) Ping() error {
 InsertTask inserts a new task into the
 database.
 */
-func (db *SupabaseDB) InsertTask(task *Task) error {
+func (db *SupabaseDB) InsertTask(rootCtx context.Context, task *Task) error {
+  ctx, cancel := context.WithTimeout(rootCtx, 5 * time.Second)
+  defer cancel()
+  
 	query, args := db.buildInsertQuery(task)
 
-	cmdTag, err := db.Pool.Exec(db.Ctx, query, args...)
+	cmdTag, err := db.Pool.Exec(ctx, query, args...)
 	if err != nil {
 		return fmt.Errorf("insert execution error: %w", err)
 	}

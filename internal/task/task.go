@@ -4,6 +4,7 @@ Package task offers (CRUD) functionality for tasks.
 package task
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -12,6 +13,7 @@ import (
 
 // Create creates and saves a new task (persistence planned).
 func Create(
+  rootCtx context.Context, 
 	inputHandler *domain.TaskInputHandler,
 	taskIDGen *domain.TaskIDGenerator,
 	db *domain.SupabaseDB,
@@ -20,8 +22,8 @@ func Create(
 	task := newTask(inputHandler, taskIDGen)
 
 	// Persist user's task
-	if err := db.InsertTask(task); err != nil {
-		return fmt.Errorf("persistence error: %s\n", err.Error())
+	if err := db.InsertTask(rootCtx, task); err != nil {
+		return fmt.Errorf("persistence error: %s\n", err)
 	}
 
 	// Output created task.
