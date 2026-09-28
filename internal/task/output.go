@@ -63,7 +63,7 @@ func outputNewTask(t *domain.Task) {
 		if field.ID == "due_at" {
 			fmt.Printf("  > %v\n", v)
 		} else {
-			fmt.Printf("  > %s%v%s\n", domain.QuoteSymbol, v, domain.QuoteSymbol)
+			fmt.Printf("  > %q\n", v)
 		}
 	}
 

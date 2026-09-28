@@ -11,9 +11,6 @@ indent constant.
 */
 var Indent = "  "
 
-// QuoteSymbol for wrapping quoted text.
-var QuoteSymbol = `"`
-
 /*
 TimeLayouts defines the tolerated time
 layouts for displaying time and accepting
@@ -23,3 +20,5 @@ var TimeLayouts = []string{
 	"3PM",
 	"3:04PM",
 }
+
+var DBConnVarName = "SUPABASE_URI"

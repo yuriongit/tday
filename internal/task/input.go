@@ -6,7 +6,6 @@ package task
 import (
 	"fmt"
 
-	"github.com/yuriongit/tday/internal/app"
 	"github.com/yuriongit/tday/internal/domain"
 )
 
@@ -17,7 +16,7 @@ of collecting this data, each field's value
 is updated through direct access to the
 domain.
 */
-func collectTaskInputs(inputHandler *app.TaskInputHandler) domain.TaskInputData {
+func collectTaskInputs(inputHandler *domain.TaskInputHandler) domain.TaskInputData {
 	scanner := inputHandler.Scanner
 	input := make(domain.TaskInputData)
 

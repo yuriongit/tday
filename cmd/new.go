@@ -1,27 +1,28 @@
 /*
-Package cmd holds all of TDay's commands
+Package cmd holds all of TDay's commands.
 
-Copyright © 2026 Yuri Okeren <yuri.dev44@outlook.com>
+Copyright © 2026 Yuri Okeren <yuri.dev44@outlook.com>.
 */
 package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/yuriongit/tday/internal/app"
 	"github.com/yuriongit/tday/internal/task"
 )
 
-// newCmd represents the new command
+// newCmd represents the new command.
 var newCmd = &cobra.Command{
 	Use:   "new",
 	Short: "creates a new task",
 	Long:  `TODO: Implement later`,
-	Run: func(_ *cobra.Command, _ []string) {
-		app := app.InitApp()
-		inputHandler := app.TaskInputHandler
-		taskIDGen := app.TaskIDGenerator
+	RunE: func(_ *cobra.Command, _ []string) error {
+		app := GetApp()
 
-		task.Create(inputHandler, taskIDGen)
+		return task.Create(app.Ctx,
+			app.TaskInputHandler,
+			app.TaskIDGenerator,
+			app.Database,
+		)
 	},
 }
 
