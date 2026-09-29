@@ -12,8 +12,8 @@ import (
 
 // lsCmd represents the ls command
 var lsCmd = &cobra.Command{
-  // Rename 'ls' command to 'la' for listing all tasks
-	Use:   "ls", 
+	// Rename 'ls' command to 'la' for listing all tasks
+	Use:   "ls",
 	Short: "lists out all tasks",
 	Long:  `TODO: Implement later`,
 	Run: func(cmd *cobra.Command, args []string) {
