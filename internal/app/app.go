@@ -1,6 +1,6 @@
 /*
-Package app contains the app's core
-types and dependencies.
+Package app contains the application's core types
+and dependencies.
 */
 package app
 
@@ -9,8 +9,8 @@ import (
 )
 
 /*
-App contains the dependencies used
-by the application.
+App contains the dependencies used by the
+application.
 */
 type App struct {
 	TaskInputHandler *TaskInputHandler
@@ -23,8 +23,8 @@ type App struct {
 }
 
 /*
-InitApp creates and initializes
-the application's dependencies.
+InitApp creates and initializes the application's
+dependencies.
 */
 func InitApp() (*App, error) {
 	db, err := NewSupabaseDB(context.Background())
@@ -32,7 +32,7 @@ func InitApp() (*App, error) {
 		return nil, err
 	}
 
-	rootCtx, rootCancel := context.WithCancel(context.Background())
+	rootCtx, rootCancel := context.WithCancel(context.Background()) //nolint:gosec // rootCtx & rootCancel are called
 
 	return &App{
 		TaskInputHandler: NewTaskInputHandler(),

@@ -1,6 +1,7 @@
 /*
-Package task is responsible for streaming output
-to the terminal.
+Package task offers the CRUD functionality for
+tasks, currently offers the functionality to
+create and read all tasks.
 */
 package task
 
@@ -14,6 +15,10 @@ import (
 	"github.com/yuriongit/tday/internal/domain"
 )
 
+/*
+clearTerminal clears the previous output from
+the terminal.
+*/
 func clearTerminal() {
 	var cmd *exec.Cmd
 
@@ -30,8 +35,8 @@ func clearTerminal() {
 }
 
 /*
-outputNewTask outputs the created task and extra
-relative information to the task.
+outputNewTask outputs the created task and it's
+metadata in a formatted manner.
 */
 func outputNewTask(t *domain.Task) {
 	clearTerminal()
@@ -41,7 +46,7 @@ func outputNewTask(t *domain.Task) {
 	fmt.Println("————————————————————————————")
 
 	fmt.Println("Metadata:")
-	fmt.Printf("i. UUID:\n  > %s\n", t.UUID)
+	fmt.Printf("i. UUID:\n  > %s\n", t.Metadata.UUID)
 	fmt.Printf(
 		"i. Created at:\n  > %s\n  > %s\n",
 		time.Now().Format("Jan 2, 2006"),
@@ -70,21 +75,25 @@ func outputNewTask(t *domain.Task) {
 	fmt.Println("————————————————————————————")
 }
 
+/*
+outputAllTasks outputs all the persisted tasks in
+a formatted manner.
+*/
 func outputAllTasks(tasks []domain.Task) {
 	if len(tasks) == 0 {
 		fmt.Println("No tasks found")
 		return
 	}
 
+	tasksAmt := len(tasks) + 1
+
 	fmt.Printf(
-		"1%d total / 1%d remaining / %d complete\n",
-		len(tasks),
-		len(tasks),
-		0, // To be determined when tasks can be marked complete
+		"%d total / %d remaining / %d complete\n",
+		tasksAmt,
+		tasksAmt,
+		0, // TBD: When tasks can be marked as complete
 	)
 	fmt.Println("—————————————————————————————————————")
-
-	// •
 
 	for idx, task := range tasks {
 		label := (*task.InputData)[domain.LabelField]

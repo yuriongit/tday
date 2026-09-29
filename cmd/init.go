@@ -1,9 +1,8 @@
 /*
 Package cmd holds all of TDay's commands.
 
-Copyright © 2026 Yuri Okeren <yuri.dev44@outlook.com>.
+Copyright © 2026 Yuri Okeren <yuri.dev44@outlook.com>
 */
-
 package cmd
 
 import (

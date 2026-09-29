@@ -44,8 +44,8 @@ const (
 )
 
 /*
-FieldDefinition describes a field and
-how its value should be validated.
+FieldDefinition describes a field and how
+its value should be validated.
 */
 type FieldDefinition struct {
 	ID       TaskFieldType
@@ -56,8 +56,8 @@ type FieldDefinition struct {
 }
 
 /*
-AllFields contains the fields that can
-be used when creating a task.
+AllFields contains the fields that make up
+a task.
 */
 var AllFields = []FieldDefinition{
 	{
@@ -91,17 +91,16 @@ var AllFields = []FieldDefinition{
 }
 
 /*
-Metadata contains information shared
-across domain objects.
+TaskMetadata contains information
 */
-type Metadata struct {
+type TaskMetadata struct {
 	UUID      ID
 	CreatedAt time.Time
 }
 
 /*
-TaskInputData contains the values
-provided for a task's fields.
+TaskInputData contains the values provided
+for a task's fields.
 */
 type TaskInputData map[TaskFieldType]any
 
@@ -110,7 +109,7 @@ Task represents a task and its
 associated data.
 */
 type Task struct {
-	Metadata
+	Metadata  TaskMetadata
 	InputData *TaskInputData
 }
 

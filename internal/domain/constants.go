@@ -6,8 +6,8 @@ constants.
 package domain
 
 /*
-Indent is the amount of spaces for an
-indent constant.
+Indent is the amount of spaces for an indent
+presented in any output.
 */
 var Indent = "  "
 
@@ -21,4 +21,8 @@ var TimeLayouts = []string{
 	"3:04PM",
 }
 
-var DBConnVarName = "SUPABASE_URI"
+/*
+DBConnStringVarName is the name of the connection
+string environment variable for the database.
+*/
+var DBConnStringVarName = "SUPABASE_URI"

@@ -1,5 +1,7 @@
 /*
-Package task is responsible for all input.
+Package task offers the CRUD functionality for
+tasks, currently offers the functionality to
+create and read all tasks.
 */
 package task
 
@@ -17,7 +19,9 @@ of collecting this data, each field's value
 is updated through direct access to the
 domain.
 */
-func collectTaskInputs(inputHandler *app.TaskInputHandler) domain.TaskInputData {
+func collectTaskInputs(
+	inputHandler *app.TaskInputHandler,
+) domain.TaskInputData {
 	scanner := inputHandler.Scanner
 	input := make(domain.TaskInputData)
 

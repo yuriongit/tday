@@ -1,6 +1,6 @@
 /*
-Package app contains the app's core
-types and dependencies.
+Package app contains the application's core types
+and dependencies.
 */
 package app
 
@@ -17,15 +17,19 @@ import (
 	"github.com/yuriongit/tday/internal/domain"
 )
 
+/*
+Database defines connectivity and managerial
+methods for tasks.
+*/
 type Database interface {
-	// Connectivity methods:
+	// Connectivity methods
 	Ping(rootCtx context.Context) error
 
-	// CRUD methods:
+	// CRUD methods
 	InsertTask(rootCtx context.Context, task *domain.Task) error
 	QueryAllTasks(rootCtx context.Context) ([]domain.Task, error)
 
-	// Remaining CRUD methods:
+	// Remaining CRUD methods
 	/* QueryTask()
 	DeleteTask()
 	DeleteSetOfTask()
@@ -69,9 +73,9 @@ func (db *SupabaseDB) newPool(tempCtx context.Context) error {
 	}
 
 	// Retrieves DB_URI environment variable.
-	dbURI := os.Getenv(domain.DBConnVarName)
+	dbURI := os.Getenv(domain.DBConnStringVarName)
 	if dbURI == "" {
-		return fmt.Errorf("missing '%s'", domain.DBConnVarName)
+		return fmt.Errorf("missing '%s'", domain.DBConnStringVarName)
 	}
 
 	// Creates a Postgres config.
@@ -135,7 +139,9 @@ func (db *SupabaseDB) InsertTask(rootCtx context.Context, task *domain.Task) err
 	if err != nil {
 		return fmt.Errorf("insert execution error: %w", err)
 	}
-	// Insertion failure if Postgres affects 0 rows
+
+	// Check for insertion failure; if 0 rows were
+	// affected
 	if cmdTag.RowsAffected() == 0 {
 		return fmt.Errorf("insert failed: no rows affected")
 	}
@@ -143,12 +149,11 @@ func (db *SupabaseDB) InsertTask(rootCtx context.Context, task *domain.Task) err
 	return nil
 }
 
-// TODO: buildInsertTaskQuery should be changed to buildInsertTaskQuery
 func (db *SupabaseDB) buildInsertTaskQuery(task *domain.Task) (string, []any) {
 	inputMap := *task.InputData
 
 	columns := []string{"uuid", "created_at"}
-	args := []any{task.UUID, task.CreatedAt}
+	args := []any{task.Metadata.UUID, task.Metadata.CreatedAt}
 
 	for _, field := range domain.AllFields {
 		columns = append(columns, fmt.Sprintf(`"%s"`, field.ID))
@@ -169,11 +174,12 @@ func (db *SupabaseDB) buildInsertTaskQuery(task *domain.Task) (string, []any) {
 	return query, args
 }
 
+// QueryAllTasks queries all tasks from the database.
 func (db *SupabaseDB) QueryAllTasks(rootCtx context.Context) ([]domain.Task, error) {
 	ctx, cancel := context.WithTimeout(rootCtx, 5*time.Second)
 	defer cancel()
 
-	// Build dynamic SELECT from AllFields
+	// Build dynamic SELECT statement from AllFields
 	columnNames := make([]string, 0, len(domain.AllFields))
 	for _, field := range domain.AllFields {
 		columnNames = append(columnNames, string(field.ID))
