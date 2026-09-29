@@ -9,8 +9,8 @@ import (
 )
 
 /*
-App contains the dependencies used
-by the application.
+App contains the dependencies used by the 
+application.
 */
 type App struct {
 	TaskInputHandler *TaskInputHandler
@@ -23,8 +23,8 @@ type App struct {
 }
 
 /*
-InitApp creates and initializes
-the application's dependencies.
+InitApp creates and initializes the application's
+dependencies.
 */
 func InitApp() (*App, error) {
 	db, err := NewSupabaseDB(context.Background())

@@ -1,5 +1,7 @@
 /*
-Package task offers (CRUD) functionality for tasks.
+Package task offers the CRUD functionality for
+tasks, currently offers the functionality to
+create and read all tasks.
 */
 package task
 
@@ -19,8 +21,10 @@ func newTask(
 	taskInputs := collectTaskInputs(inputHandler)
 
 	return &domain.Task{
-		UUID:      id,
-		CreatedAt: time.Now(),
+		Metadata: domain.TaskMetadata{
+			UUID:      id,
+			CreatedAt: time.Now(),
+		},
 		InputData: &taskInputs,
 	}
 }

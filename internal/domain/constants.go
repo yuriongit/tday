@@ -6,8 +6,8 @@ constants.
 package domain
 
 /*
-Indent is the amount of spaces for an
-indent constant.
+Indent is the amount of spaces for an indent 
+presented in any output.
 */
 var Indent = "  "
 

@@ -1,3 +1,7 @@
+/* 
+Package config provides helpers for working
+with TDay's configuration directory.
+ */
 package config
 
 import (
@@ -6,6 +10,10 @@ import (
 	"path/filepath"
 )
 
+/* 
+ChdirToConfigDir changes the current directory
+to TDay's config directory.
+ */
 func ChdirToConfigDir() (err error) {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {

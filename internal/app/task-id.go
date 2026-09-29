@@ -11,8 +11,7 @@ import (
 )
 
 /*
-TaskIDGenerator is an IDGenerator for
-tasks.
+TaskIDGenerator is an IDGenerator for tasks.
 */
 type TaskIDGenerator struct{}
 
