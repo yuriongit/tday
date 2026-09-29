@@ -58,11 +58,11 @@ func NewSupabaseDB(tempCtx context.Context) (*SupabaseDB, error) {
 
 // newPool creates the connection pool.
 func (db *SupabaseDB) newPool(tempCtx context.Context) error {
-  // Change into config directory
-  if err := config.ChdirToConfigDir(); err != nil {
-    return err
-  }
-  
+	// Change into config directory
+	if err := config.ChdirToConfigDir(); err != nil {
+		return err
+	}
+
 	// Load environment variables from .env file.
 	if err := godotenv.Load(".env"); err != nil {
 		return fmt.Errorf("env load error: %w", err)
