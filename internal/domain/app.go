@@ -18,6 +18,8 @@ type App struct {
 	Database         *SupabaseDB
 	Ctx              context.Context
 	Cancel           context.CancelFunc
+	// Add validator and maybe instantiation func
+	// Validator validator.Validate 
 }
 
 /*

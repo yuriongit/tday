@@ -135,6 +135,7 @@ func (db *SupabaseDB) InsertTask(rootCtx context.Context, task *Task) error {
 	return nil
 }
 
+// TODO: buildInsertQuery should be changed to buildInsertTaskQuery
 func (db *SupabaseDB) buildInsertQuery(task *Task) (string, []any) {
 	inputMap := *task.InputData
 
