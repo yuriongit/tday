@@ -9,7 +9,10 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+	app "github.com/yuriongit/tday/internal/app"
 )
+
+var globalApp *app.App
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -25,6 +28,22 @@ a lack of simplicity, sluggishness, and a mouse-oriented UX. Tday is to
 make managing my tasks as simple and as straightfoward as it actually
 should be.
 `,
+	PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
+		// Skip app init for "init" command
+		if cmd.Name() == "init" {
+			return nil
+		}
+
+		// Initialize app for all other commands
+		var err error
+		globalApp, err = app.InitApp()
+		if err != nil {
+			return err
+		}
+
+		SetApp(globalApp)
+		return nil
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -33,6 +52,12 @@ func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
 		os.Exit(1)
+	}
+
+	// Global cleanup
+	if globalApp != nil {
+		globalApp.Cancel()
+		globalApp.Database.Pool.Close()
 	}
 }
 
