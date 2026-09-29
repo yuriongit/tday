@@ -1,6 +1,6 @@
 /*
-Package app contains the app's core
-types and dependencies.
+Package app contains the application's core types
+and dependencies.
 */
 package app
 
