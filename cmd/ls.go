@@ -7,6 +7,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
+	"github.com/yuriongit/tday/internal/task"
 )
 
 // lsCmd represents the ls command
@@ -16,7 +17,9 @@ var lsCmd = &cobra.Command{
 	Short: "lists out all tasks",
 	Long:  `TODO: Implement later`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("ls called")
+		app := GetApp()
+
+		task.ListAll(app.Ctx, app.Database)
 	},
 }
 

@@ -25,7 +25,6 @@ type Database interface {
 	
 	// Remaining CRUD methods:
 	/* QueryTask()
-	QueryAllTasks()
 	DeleteTask()
 	DeleteSetOfTask()
 	UpdateTask()
