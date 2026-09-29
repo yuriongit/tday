@@ -25,22 +25,25 @@ func outputAllTasks(tasks []domain.Task) {
 	}
 
 	fmt.Printf(
-  	"%d total tasks, %d remaining, %d complete\n", 
+  	"1%d total / 1%d remaining / %d complete\n", 
   	len(tasks), 
   	len(tasks),
   	0, // To be determined when tasks can be marked complete
 	)
-	fmt.Println("——————————————————————————————————————————")
+	fmt.Println("—————————————————————————————————————")
 	
 	// • 
 	
 	for idx, task := range tasks {
 		label := (*task.InputData)[domain.LabelField]
 		title := (*task.InputData)[domain.TitleField]
+		desc := (*task.InputData)[domain.DescriptionField]
 		dueAt := (*task.InputData)[domain.DueAtField]
-		createdAt := task.Metadata.CreatedAt.Format("Jan 2, 2006")
 		time := task.Metadata.CreatedAt.Format(domain.TimeLayouts[1])
-		fmt.Printf("• [%d] %s: %q\n", idx, label, title)
-		fmt.Printf("   > Created: %s - %s\n   > Due: %v\n\n", createdAt, time, dueAt)
+		fmt.Printf("• {%d} %s: %q\n", idx, label, title)
+		if desc != "" {
+  		fmt.Printf("   > Desc: %q\n", desc) 
+		}
+		fmt.Printf("   > Created at: %s | Due at: %s\n\n", time, dueAt)
 	}
 }
