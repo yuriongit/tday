@@ -3,10 +3,10 @@ package task
 import (
 	"context"
 
-	"github.com/yuriongit/tday/internal/domain"
+	"github.com/yuriongit/tday/internal/app"
 )
 
-func ListAll(rootCtx context.Context, db domain.Database) error {
+func ListAll(rootCtx context.Context, db app.Database) error {
 	tasks, err := db.QueryAllTasks(rootCtx)
 	if err != nil {
 		return err

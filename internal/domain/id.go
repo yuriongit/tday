@@ -4,10 +4,6 @@ types and dependencies.
 */
 package domain
 
-import (
-	"uuid"
-)
-
 /*
 ID is branded type which is of type string,
 serving the purpose of being a uniquely
@@ -30,18 +26,4 @@ IDGenerators.
 */
 type IDGenerator interface {
 	Generate() ID
-}
-
-/*
-TaskIDGenerator is an IDGenerator for
-tasks.
-*/
-type TaskIDGenerator struct{}
-
-/*
-Generate implements IDGenerator's Generate
-method for TaskIDGenerator.
-*/
-func (*TaskIDGenerator) Generate() ID {
-	return ID(uuid.New().String()[:5])
 }

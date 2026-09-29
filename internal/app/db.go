@@ -1,8 +1,8 @@
 /*
-Package domain contains the app's core
+Package app contains the app's core
 types and dependencies.
 */
-package domain
+package app
 
 import (
 	"context"
@@ -13,6 +13,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
+	"github.com/yuriongit/tday/internal/domain"
 )
 
 type Database interface {
@@ -20,8 +21,8 @@ type Database interface {
 	Ping(rootCtx context.Context) error
 
 	// CRUD methods:
-	InsertTask(rootCtx context.Context, task *Task) error
-	QueryAllTasks(rootCtx context.Context) ([]Task, error)
+	InsertTask(rootCtx context.Context, task *domain.Task) error
+	QueryAllTasks(rootCtx context.Context) ([]domain.Task, error)
 
 	// Remaining CRUD methods:
 	/* QueryTask()
@@ -62,9 +63,9 @@ func (db *SupabaseDB) newPool(tempCtx context.Context) error {
 	}
 
 	// Retrieves DB_URI environment variable.
-	dbURI := os.Getenv(DBConnVarName)
+	dbURI := os.Getenv(domain.DBConnVarName)
 	if dbURI == "" {
-		return fmt.Errorf("missing '%s'", DBConnVarName)
+		return fmt.Errorf("missing '%s'", domain.DBConnVarName)
 	}
 
 	// Creates a Postgres config.
@@ -118,7 +119,7 @@ func (db *SupabaseDB) Ping(rootCtx context.Context) error {
 InsertTask inserts a new task into the
 database.
 */
-func (db *SupabaseDB) InsertTask(rootCtx context.Context, task *Task) error {
+func (db *SupabaseDB) InsertTask(rootCtx context.Context, task *domain.Task) error {
 	ctx, cancel := context.WithTimeout(rootCtx, 5*time.Second)
 	defer cancel()
 
@@ -137,13 +138,13 @@ func (db *SupabaseDB) InsertTask(rootCtx context.Context, task *Task) error {
 }
 
 // TODO: buildInsertTaskQuery should be changed to buildInsertTaskQuery
-func (db *SupabaseDB) buildInsertTaskQuery(task *Task) (string, []any) {
+func (db *SupabaseDB) buildInsertTaskQuery(task *domain.Task) (string, []any) {
 	inputMap := *task.InputData
 
 	columns := []string{"uuid", "created_at"}
 	args := []any{task.UUID, task.CreatedAt}
 
-	for _, field := range AllFields {
+	for _, field := range domain.AllFields {
 		columns = append(columns, fmt.Sprintf(`"%s"`, field.ID))
 		args = append(args, inputMap[field.ID])
 	}
@@ -162,13 +163,13 @@ func (db *SupabaseDB) buildInsertTaskQuery(task *Task) (string, []any) {
 	return query, args
 }
 
-func (db *SupabaseDB) QueryAllTasks(rootCtx context.Context) ([]Task, error) {
+func (db *SupabaseDB) QueryAllTasks(rootCtx context.Context) ([]domain.Task, error) {
 	ctx, cancel := context.WithTimeout(rootCtx, 5*time.Second)
 	defer cancel()
 
 	// Build dynamic SELECT from AllFields
-	columnNames := make([]string, 0, len(AllFields))
-	for _, field := range AllFields {
+	columnNames := make([]string, 0, len(domain.AllFields))
+	for _, field := range domain.AllFields {
 		columnNames = append(columnNames, string(field.ID))
 	}
 
@@ -180,18 +181,18 @@ func (db *SupabaseDB) QueryAllTasks(rootCtx context.Context) ([]Task, error) {
 	}
 	defer rows.Close()
 
-	var tasks []Task
+	var tasks []domain.Task
 
 	for rows.Next() {
-		var task Task
+		var task domain.Task
 
 		// Create scan args: UUID, CreatedAt, then one for each field
-		scanArgs := make([]any, len(AllFields)+2)
+		scanArgs := make([]any, len(domain.AllFields)+2)
 		scanArgs[0] = &task.Metadata.UUID
 		scanArgs[1] = &task.Metadata.CreatedAt
 
-		values := make([]any, len(AllFields))
-		for i := range AllFields {
+		values := make([]any, len(domain.AllFields))
+		for i := range domain.AllFields {
 			scanArgs[i+2] = &values[i]
 		}
 
@@ -200,8 +201,8 @@ func (db *SupabaseDB) QueryAllTasks(rootCtx context.Context) ([]Task, error) {
 		}
 
 		// Populate InputData map dynamically from AllFields
-		inputData := TaskInputData{}
-		for i, field := range AllFields {
+		inputData := domain.TaskInputData{}
+		for i, field := range domain.AllFields {
 			inputData[field.ID] = values[i]
 		}
 		task.InputData = &inputData

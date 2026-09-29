@@ -6,13 +6,14 @@ package task
 import (
 	"time"
 
+	"github.com/yuriongit/tday/internal/app"
 	"github.com/yuriongit/tday/internal/domain"
 )
 
 // newTask instantiates a new Task struct.
 func newTask(
-	inputHandler *domain.TaskInputHandler,
-	taskIDGen *domain.TaskIDGenerator,
+	inputHandler *app.TaskInputHandler,
+	taskIDGen *app.TaskIDGenerator,
 ) *domain.Task {
 	id := taskIDGen.Generate()
 	taskInputs := collectTaskInputs(inputHandler)
