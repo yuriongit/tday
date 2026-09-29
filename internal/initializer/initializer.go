@@ -1,6 +1,6 @@
 /*
 Package initializer is for initializing TDay's
-config. This package prepares the needed 
+config. This package prepares the needed
 environment variables for the application to
 use. Also, this package directly enables global
 usage of TDay.
@@ -14,10 +14,10 @@ import (
 	"strings"
 )
 
-/* 
-InitConfig initializes the tday 
+/*
+InitConfig initializes the tday
 configuration directory and .env file
- */
+*/
 func InitConfig() error {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {

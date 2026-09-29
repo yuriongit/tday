@@ -9,7 +9,7 @@ import (
 )
 
 /*
-App contains the dependencies used by the 
+App contains the dependencies used by the
 application.
 */
 type App struct {

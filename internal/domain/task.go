@@ -44,7 +44,7 @@ const (
 )
 
 /*
-FieldDefinition describes a field and how 
+FieldDefinition describes a field and how
 its value should be validated.
 */
 type FieldDefinition struct {
@@ -91,7 +91,7 @@ var AllFields = []FieldDefinition{
 }
 
 /*
-TaskMetadata contains information 
+TaskMetadata contains information
 */
 type TaskMetadata struct {
 	UUID      ID
@@ -109,7 +109,7 @@ Task represents a task and its
 associated data.
 */
 type Task struct {
-	Metadata TaskMetadata
+	Metadata  TaskMetadata
 	InputData *TaskInputData
 }
 

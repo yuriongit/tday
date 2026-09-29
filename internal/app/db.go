@@ -135,8 +135,8 @@ func (db *SupabaseDB) InsertTask(rootCtx context.Context, task *domain.Task) err
 	if err != nil {
 		return fmt.Errorf("insert execution error: %w", err)
 	}
-	
-	// Check for insertion failure; if 0 rows were 
+
+	// Check for insertion failure; if 0 rows were
 	// affected
 	if cmdTag.RowsAffected() == 0 {
 		return fmt.Errorf("insert failed: no rows affected")

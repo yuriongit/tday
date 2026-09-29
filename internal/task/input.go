@@ -1,6 +1,6 @@
 /*
-Package task offers the CRUD functionality for 
-tasks, currently offers the functionality to 
+Package task offers the CRUD functionality for
+tasks, currently offers the functionality to
 create and read all tasks.
 */
 package task
@@ -20,7 +20,7 @@ is updated through direct access to the
 domain.
 */
 func collectTaskInputs(
-  inputHandler *app.TaskInputHandler,
+	inputHandler *app.TaskInputHandler,
 ) domain.TaskInputData {
 	scanner := inputHandler.Scanner
 	input := make(domain.TaskInputData)

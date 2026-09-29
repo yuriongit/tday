@@ -1,6 +1,6 @@
 /*
-Package task offers the CRUD functionality for 
-tasks, currently offers the functionality to 
+Package task offers the CRUD functionality for
+tasks, currently offers the functionality to
 create and read all tasks.
 */
 package task
@@ -15,10 +15,10 @@ import (
 	"github.com/yuriongit/tday/internal/domain"
 )
 
-/* 
+/*
 clearTerminal clears the previous output from
 the terminal.
- */
+*/
 func clearTerminal() {
 	var cmd *exec.Cmd
 
@@ -86,7 +86,7 @@ func outputAllTasks(tasks []domain.Task) {
 	}
 
 	tasksAmt := len(tasks) + 1
-	
+
 	fmt.Printf(
 		"%d total / %d remaining / %d complete\n",
 		tasksAmt,

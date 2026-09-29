@@ -1,6 +1,6 @@
 /*
-Package task offers the CRUD functionality for 
-tasks, currently offers the functionality to 
+Package task offers the CRUD functionality for
+tasks, currently offers the functionality to
 create and read all tasks.
 */
 package task
@@ -12,9 +12,9 @@ import (
 	"github.com/yuriongit/tday/internal/app"
 )
 
-/* 
+/*
 Create creates and persists a new task.
- */
+*/
 func Create(
 	rootCtx context.Context,
 	inputHandler *app.TaskInputHandler,
