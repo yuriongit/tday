@@ -12,6 +12,15 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/joho/godotenv"
+	"github.com/yuriongit/tday/internal/config"
+	"github.com/yuriongit/tday/internal/domain"
+)
+
+var (
+	envExampleValue = fmt.Sprintf("YOUR_%s", domain.DBConnStringVarName)
+	envExample      = fmt.Sprintf("%s=%s\n", domain.DBConnStringVarName, envExampleValue)
 )
 
 /*
@@ -24,51 +33,53 @@ func InitConfig() error {
 	}
 
 	tdayDir := filepath.Join(homeDir, ".tday")
-	envFilePath := filepath.Join(tdayDir, ".env")
 
-	// Check if .tday directory already exists
-	dirExists := false
-	if info, err := os.Stat(tdayDir); err == nil && info.IsDir() {
-		dirExists = true
-		fmt.Println("✓ ~/.tday directory already exists")
-	}
-
-	// Create directory if it doesn't exist
-	if !dirExists {
+	// Ensure ~/.tday exists and log status
+	if _, err := os.Stat(tdayDir); err == nil {
+		fmt.Println("✓ Found existing ~/.tday directory")
+	} else {
 		if err := os.MkdirAll(tdayDir, 0700); err != nil {
 			return fmt.Errorf("failed to create ~/.tday directory: %w", err)
 		}
 		fmt.Println("✓ Created ~/.tday directory")
 	}
 
-	// Check if .env file already exists
-	envExists := false
-	if _, err := os.Stat(envFilePath); err == nil {
-		envExists = true
-		fmt.Println("✓ .env file already exists in ~/.tday")
+	// Move into ~/.tday early so subsequent file operations are relative
+	if err := config.ChdirToConfigDir(); err != nil {
+		return err
 	}
 
-	// Create .env file if it doesn't exist
-	if !envExists {
-		envContent := "SUPABASE_URI=your-supabase-uri\n"
+	return setupEnvFile()
+}
 
-		if err := os.WriteFile(envFilePath, []byte(envContent), 0600); err != nil {
-			return fmt.Errorf("failed to create .env file: %w", err)
+// setupEnvFile handles creation, loading, and verification of the local .env file.
+func setupEnvFile() error {
+	// os.O_EXCL creates the file atomically or fails if it already exists
+	f, err := os.OpenFile(".env", os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0600)
+	if err == nil {
+		_, writeErr := f.WriteString(envExample)
+		f.Close()
+		if writeErr != nil {
+			return fmt.Errorf("failed to write .env file: %w", writeErr)
 		}
-
 		fmt.Println("✓ Created .env file in ~/.tday")
+	} else if os.IsExist(err) {
+		fmt.Println("✓ Found existing .env file in ~/.tday")
+	} else {
+		return fmt.Errorf("failed to check or create .env file: %w", err)
 	}
 
-	// Check whether SUPABASE_URI still has its placeholder value
-	envContent, err := os.ReadFile(envFilePath)
-	if err != nil {
+	// Load relative .env file
+	if err := godotenv.Load(); err != nil {
 		return fmt.Errorf("failed to read .env file: %w", err)
 	}
 
-	content := string(envContent)
-
-	if strings.Contains(content, "SUPABASE_URI=your-supabase-uri") {
-		fmt.Println("◌ Please update 'SUPABASE_URI' in ~/.tday/.env with your actual Supabase URI")
+	dbConnVar := os.Getenv(domain.DBConnStringVarName)
+	if strings.Contains(dbConnVar, envExampleValue) {
+		fmt.Printf(
+			"◌ Please update %q in ~/.tday/.env with your actual Supabase URI\n",
+			domain.DBConnStringVarName,
+		)
 	} else {
 		fmt.Println("✓ TDay already initialized")
 	}
