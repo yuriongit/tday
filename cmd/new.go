@@ -13,7 +13,7 @@ import (
 // newCmd represents the new command.
 var newCmd = &cobra.Command{
 	Use:   "new",
-	Short: "creates a new task",
+	Short: "Creates a new task",
 	Long:  `TODO: Implement later`,
 	RunE: func(_ *cobra.Command, _ []string) error {
 		app := GetApp()

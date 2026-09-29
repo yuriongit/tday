@@ -14,7 +14,7 @@ import (
 var lsCmd = &cobra.Command{
 	// Rename 'ls' command to 'la' for listing all tasks
 	Use:   "ls",
-	Short: "lists out all tasks",
+	Short: "Lists out all tasks",
 	Long:  `TODO: Implement later`,
 	RunE: func(_ *cobra.Command, _ []string) error {
 		app := GetApp()
