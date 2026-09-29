@@ -122,7 +122,7 @@ func (db *SupabaseDB) InsertTask(rootCtx context.Context, task *Task) error {
 	ctx, cancel := context.WithTimeout(rootCtx, 5*time.Second)
 	defer cancel()
 
-	query, args := db.buildInsertQuery(task)
+	query, args := db.buildInsertTaskQuery(task)
 
 	cmdTag, err := db.Pool.Exec(ctx, query, args...)
 	if err != nil {
@@ -136,8 +136,8 @@ func (db *SupabaseDB) InsertTask(rootCtx context.Context, task *Task) error {
 	return nil
 }
 
-// TODO: buildInsertQuery should be changed to buildInsertTaskQuery
-func (db *SupabaseDB) buildInsertQuery(task *Task) (string, []any) {
+// TODO: buildInsertTaskQuery should be changed to buildInsertTaskQuery
+func (db *SupabaseDB) buildInsertTaskQuery(task *Task) (string, []any) {
 	inputMap := *task.InputData
 
 	columns := []string{"uuid", "created_at"}
