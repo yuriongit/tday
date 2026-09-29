@@ -32,7 +32,7 @@ func InitApp() (*App, error) {
 		return nil, err
 	}
 
-	rootCtx, rootCancel := context.WithCancel(context.Background())
+	rootCtx, rootCancel := context.WithCancel(context.Background()) //nolint:gosec // rootCtx & rootCancel are called
 
 	return &App{
 		TaskInputHandler: NewTaskInputHandler(),

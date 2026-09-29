@@ -26,7 +26,7 @@ func Create(
 
 	// Persist the created task
 	if err := db.InsertTask(rootCtx, task); err != nil {
-		return fmt.Errorf("persistence error: %s\n", err)
+		return fmt.Errorf("persistence error: %s", err)
 	}
 
 	// Output created task

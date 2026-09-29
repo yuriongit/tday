@@ -17,6 +17,10 @@ import (
 	"github.com/yuriongit/tday/internal/domain"
 )
 
+/*
+Database defines connectivity and managerial
+methods for tasks.
+*/
 type Database interface {
 	// Connectivity methods
 	Ping(rootCtx context.Context) error
@@ -69,9 +73,9 @@ func (db *SupabaseDB) newPool(tempCtx context.Context) error {
 	}
 
 	// Retrieves DB_URI environment variable.
-	dbURI := os.Getenv(domain.DBConnVarName)
+	dbURI := os.Getenv(domain.DBConnStringVarName)
 	if dbURI == "" {
-		return fmt.Errorf("missing '%s'", domain.DBConnVarName)
+		return fmt.Errorf("missing '%s'", domain.DBConnStringVarName)
 	}
 
 	// Creates a Postgres config.
@@ -170,6 +174,7 @@ func (db *SupabaseDB) buildInsertTaskQuery(task *domain.Task) (string, []any) {
 	return query, args
 }
 
+// QueryAllTasks queries all tasks from the database.
 func (db *SupabaseDB) QueryAllTasks(rootCtx context.Context) ([]domain.Task, error) {
 	ctx, cancel := context.WithTimeout(rootCtx, 5*time.Second)
 	defer cancel()

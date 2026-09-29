@@ -15,8 +15,7 @@ import (
 )
 
 /*
-InitConfig initializes the tday
-configuration directory and .env file
+InitConfig initializes the TDay configuration directory and .env file.
 */
 func InitConfig() error {
 	homeDir, err := os.UserHomeDir()

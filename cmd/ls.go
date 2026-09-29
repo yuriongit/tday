@@ -16,10 +16,10 @@ var lsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "lists out all tasks",
 	Long:  `TODO: Implement later`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(_ *cobra.Command, _ []string) error {
 		app := GetApp()
 
-		task.ListAll(app.Ctx, app.Database)
+		return task.ListAll(app.Ctx, app.Database)
 	},
 }
 

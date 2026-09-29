@@ -91,11 +91,9 @@ func outputAllTasks(tasks []domain.Task) {
 		"%d total / %d remaining / %d complete\n",
 		tasksAmt,
 		tasksAmt,
-		0, // To be determined when tasks can be marked complete
+		0, // TBD: When tasks can be marked as complete
 	)
 	fmt.Println("—————————————————————————————————————")
-
-	// •
 
 	for idx, task := range tasks {
 		label := (*task.InputData)[domain.LabelField]

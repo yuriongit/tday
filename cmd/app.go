@@ -9,10 +9,12 @@ import app "github.com/yuriongit/tday/internal/app"
 
 var application *app.App
 
+// SetApp sets the application struct.
 func SetApp(a *app.App) {
 	application = a
 }
 
+// GetApp gets the application struct.
 func GetApp() *app.App {
 	return application
 }
