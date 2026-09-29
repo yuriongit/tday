@@ -17,13 +17,14 @@ import (
 
 type Database interface {
 	// Connectivity methods:
-	Ping() error
+	Ping(rootCtx context.Context) error
 
 	// CRUD methods:
-	InsertTask(task *Task) error
+	InsertTask(rootCtx context.Context, task *Task) error
+	QueryAllTasks(rootCtx context.Context) ([]Task, error)
+
 	// Remaining CRUD methods:
 	/* QueryTask()
-	QueryAllTasks()
 	DeleteTask()
 	DeleteSetOfTask()
 	UpdateTask()
@@ -135,6 +136,7 @@ func (db *SupabaseDB) InsertTask(rootCtx context.Context, task *Task) error {
 	return nil
 }
 
+// TODO: buildInsertQuery should be changed to buildInsertTaskQuery
 func (db *SupabaseDB) buildInsertQuery(task *Task) (string, []any) {
 	inputMap := *task.InputData
 
@@ -158,6 +160,60 @@ func (db *SupabaseDB) buildInsertQuery(task *Task) (string, []any) {
 	)
 
 	return query, args
+}
+
+func (db *SupabaseDB) QueryAllTasks(rootCtx context.Context) ([]Task, error) {
+	ctx, cancel := context.WithTimeout(rootCtx, 5*time.Second)
+	defer cancel()
+
+	// Build dynamic SELECT from AllFields
+	columnNames := make([]string, 0, len(AllFields))
+	for _, field := range AllFields {
+		columnNames = append(columnNames, string(field.ID))
+	}
+
+	query := fmt.Sprintf("SELECT uuid, created_at, %s FROM tasks", strings.Join(columnNames, ", "))
+
+	rows, err := db.Pool.Query(ctx, query)
+	if err != nil {
+		return nil, fmt.Errorf("failed to query all tasks: %w", err)
+	}
+	defer rows.Close()
+
+	var tasks []Task
+
+	for rows.Next() {
+		var task Task
+
+		// Create scan args: UUID, CreatedAt, then one for each field
+		scanArgs := make([]any, len(AllFields)+2)
+		scanArgs[0] = &task.Metadata.UUID
+		scanArgs[1] = &task.Metadata.CreatedAt
+
+		values := make([]any, len(AllFields))
+		for i := range AllFields {
+			scanArgs[i+2] = &values[i]
+		}
+
+		if err := rows.Scan(scanArgs...); err != nil {
+			return nil, fmt.Errorf("failed to scan task: %w", err)
+		}
+
+		// Populate InputData map dynamically from AllFields
+		inputData := TaskInputData{}
+		for i, field := range AllFields {
+			inputData[field.ID] = values[i]
+		}
+		task.InputData = &inputData
+
+		tasks = append(tasks, task)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating rows: %w", err)
+	}
+
+	return tasks, nil
 }
 
 // ---------------
