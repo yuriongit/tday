@@ -85,7 +85,7 @@ func outputAllTasks(tasks []domain.Task) {
 		return
 	}
 
-	tasksAmt := len(tasks) + 1
+	tasksAmt := len(tasks)
 
 	fmt.Printf(
 		"%d total / %d remaining / %d complete\n",
@@ -101,7 +101,7 @@ func outputAllTasks(tasks []domain.Task) {
 		desc := (*task.InputData)[domain.DescriptionField]
 		dueAt := (*task.InputData)[domain.DueAtField]
 		time := task.Metadata.CreatedAt.Format(domain.TimeLayouts[1])
-		fmt.Printf("• {%d} %s: %q\n", idx, label, title)
+		fmt.Printf("• {%d} %s: %q\n", (idx+1), label, title)
 		if desc != "" {
 			fmt.Printf("   > Desc: %q\n", desc)
 		}
