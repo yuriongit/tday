@@ -17,10 +17,12 @@ import (
 
 type Database interface {
 	// Connectivity methods:
-	Ping() error
+	Ping(rootCtx context.Context) error
 
 	// CRUD methods:
-	InsertTask(task *Task) error
+	InsertTask(rootCtx context.Context, task *Task) error
+  QueryAllTasks(rootCtx context.Context) ([]Task, error)
+	
 	// Remaining CRUD methods:
 	/* QueryTask()
 	QueryAllTasks()
