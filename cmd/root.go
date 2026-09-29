@@ -28,19 +28,19 @@ a lack of simplicity, sluggishness, and a mouse-oriented UX. Tday is to
 make managing my tasks as simple and as straightfoward as it actually
 should be.
 `,
-PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
+	PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
 		// Skip app init for "init" command
 		if cmd.Name() == "init" {
 			return nil
 		}
-  
+
 		// Initialize app for all other commands
 		var err error
 		globalApp, err = app.InitApp()
 		if err != nil {
 			return err
 		}
-  
+
 		SetApp(globalApp)
 		return nil
 	},

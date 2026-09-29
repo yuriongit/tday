@@ -1,10 +1,10 @@
-/* 
+/*
 Package initializer is for initializing TDay's
 config, including needed environment variables
 and other soon to come configuration options,
-if any. Also, this package directly enables 
+if any. Also, this package directly enables
 global usage of the tool.
- */
+*/
 package initializer
 
 import (

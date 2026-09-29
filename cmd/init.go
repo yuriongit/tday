@@ -15,7 +15,7 @@ import (
 var initCmd = &cobra.Command{
 	Use:   "init",
 	Short: "initializes tday config",
-	Long: `TODO: Implement later`,
+	Long:  `TODO: Implement later`,
 	RunE: func(_ *cobra.Command, _ []string) error {
 		return initializer.InitConfig()
 	},
