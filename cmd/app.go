@@ -1,13 +1,13 @@
 package cmd
 
-import "github.com/yuriongit/tday/internal/domain"
+import app "github.com/yuriongit/tday/internal/app"
 
-var app *domain.App
+var application *app.App
 
-func SetApp(a *domain.App) {
-	app = a
+func SetApp(a *app.App) {
+	application = a
 }
 
-func GetApp() *domain.App {
-	return app
+func GetApp() *app.App {
+	return application
 }

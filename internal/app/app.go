@@ -1,8 +1,8 @@
 /*
-Package domain contains the app's core
+Package app contains the app's core
 types and dependencies.
 */
-package domain
+package app
 
 import (
 	"context"

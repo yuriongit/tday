@@ -9,11 +9,11 @@ import (
 	"log"
 
 	"github.com/yuriongit/tday/cmd"
-	"github.com/yuriongit/tday/internal/domain"
+	"github.com/yuriongit/tday/internal/app"
 )
 
 func main() {
-	app, err := domain.InitApp()
+	app, err := app.InitApp()
 	if err != nil {
 		log.Fatal(err)
 	}

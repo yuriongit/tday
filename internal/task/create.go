@@ -4,15 +4,15 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/yuriongit/tday/internal/domain"
+	"github.com/yuriongit/tday/internal/app"
 )
 
 // Create creates and saves a new task (persistence planned).
 func Create(
 	rootCtx context.Context,
-	inputHandler *domain.TaskInputHandler,
-	taskIDGen *domain.TaskIDGenerator,
-	db *domain.SupabaseDB,
+	inputHandler *app.TaskInputHandler,
+	taskIDGen *app.TaskIDGenerator,
+	db *app.SupabaseDB,
 ) error {
 	// Collect inputs from user.
 	task := newTask(inputHandler, taskIDGen)
