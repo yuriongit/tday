@@ -152,7 +152,7 @@ func (db *SupabaseDB) InsertTask(rootCtx context.Context, task *domain.Task) err
 func (db *SupabaseDB) buildInsertTaskQuery(task *domain.Task) (string, []any) {
 	inputMap := *task.InputData
 
-	columns := []string{"uuid", "created_at"}
+	columns := []string{"uuid", "created_at", "completed_at"}
 	args := []any{task.Metadata.UUID, task.Metadata.CreatedAt}
 
 	for _, field := range domain.AllFields {
@@ -185,7 +185,7 @@ func (db *SupabaseDB) QueryAllTasks(rootCtx context.Context) ([]domain.Task, err
 		columnNames = append(columnNames, string(field.ID))
 	}
 
-	query := fmt.Sprintf("SELECT uuid, created_at, %s FROM tasks", strings.Join(columnNames, ", "))
+	query := fmt.Sprintf("SELECT uuid, created_at, completed_at, %s FROM tasks ORDER BY completed_at ASC", strings.Join(columnNames, ", "))
 
 	rows, err := db.Pool.Query(ctx, query)
 	if err != nil {
@@ -199,13 +199,14 @@ func (db *SupabaseDB) QueryAllTasks(rootCtx context.Context) ([]domain.Task, err
 		var task domain.Task
 
 		// Create scan args: UUID, CreatedAt, then one for each field
-		scanArgs := make([]any, len(domain.AllFields)+2)
+		scanArgs := make([]any, len(domain.AllFields)+3)
 		scanArgs[0] = &task.Metadata.UUID
 		scanArgs[1] = &task.Metadata.CreatedAt
+		scanArgs[2] = &task.Metadata.CompletedAt
 
 		values := make([]any, len(domain.AllFields))
 		for i := range domain.AllFields {
-			scanArgs[i+2] = &values[i]
+			scanArgs[i+3] = &values[i]
 		}
 
 		if err := rows.Scan(scanArgs...); err != nil {
