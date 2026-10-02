@@ -94,8 +94,9 @@ var AllFields = []FieldDefinition{
 TaskMetadata contains information
 */
 type TaskMetadata struct {
-	UUID      ID
-	CreatedAt time.Time
+	UUID        ID
+	CreatedAt   time.Time
+	CompletedAt time.Time
 }
 
 /*

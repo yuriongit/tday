@@ -100,10 +100,15 @@ func outputAllTasks(tasks []domain.Task) {
 		title := (*task.InputData)[domain.TitleField]
 		desc := (*task.InputData)[domain.DescriptionField]
 		dueAt := (*task.InputData)[domain.DueAtField]
+		completedAt := task.Metadata.CompletedAt
 		time := task.Metadata.CreatedAt.Format(domain.TimeLayouts[1])
+		
 		fmt.Printf("• {%d} %s: %q\n", (idx+1), label, title)
 		if desc != "" {
 			fmt.Printf("   > Desc: %q\n", desc)
+		}
+		if !completedAt.IsZero() {
+  		fmt.Printf("   > Completed at: %s\n", completedAt.Format(domain.TimeLayouts[1]))
 		}
 		fmt.Printf("   > Created at: %s | Due at: %s\n\n", time, dueAt)
 	}
