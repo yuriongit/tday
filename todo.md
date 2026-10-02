@@ -1,16 +1,37 @@
 # TDay - To-Do
 
+## Features
+
+- Add severity field
+- Add color to output
+
 ## Commands
 
-- [ ] ```tday new```
-- [ ] ```tday ls```
-- [ ] ```tday upd```
-- [ ] ```tday rm```
+- [ ] `tday upd`
+- [ ] `tday done`
+- [ ] `tday rm`
 
-- [ ] ```tday old ls``` for listing expired tasks
-- [ ] ```tday old rm {#}```
-- [ ] ```tday old done {#}```
+Expiration
 
-expired tasks will list the actual date it was created
+- [ ] `tday ls exp`
+- [ ] `tday rm exp {#}`
+- [ ] `tday done exp {#}`
+
+Expired tasks will explicitly list the date it was created
+and tasks will be sorted by the TTL
 on and the time it was due at will show the overdue label
-and the TTL.
+and the TTL. After the TTL the task will self-destruct.
+
+Completion
+
+- [ ] `tday done {#}`
+- [ ] `tday ls done`
+- [ ] `tday done {#, #, #, #}`
+
+Updates
+
+- [ ] `tday upd {#}`
+
+Tmrw flag (maybe adding...)
+
+- [ ] `tday cmd --tmrw`
