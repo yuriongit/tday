@@ -153,7 +153,7 @@ func (db *SupabaseDB) buildInsertTaskQuery(task *domain.Task) (string, []any) {
 	inputMap := *task.InputData
 
 	columns := []string{"uuid", "created_at", "completed_at"}
-	args := []any{task.Metadata.UUID, task.Metadata.CreatedAt}
+	args := []any{task.Metadata.UUID, task.Metadata.CreatedAt, task.Metadata.CompletedAt}
 
 	for _, field := range domain.AllFields {
 		columns = append(columns, fmt.Sprintf(`"%s"`, field.ID))
