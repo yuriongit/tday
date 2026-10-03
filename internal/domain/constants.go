@@ -17,8 +17,8 @@ layouts for displaying time and accepting
 a value for a task's "due_at" field.
 */
 var TimeLayouts = []string{
-	"3PM",
-	"3:04PM",
+	"3pm",
+	"3:04pm",
 }
 
 /*
