@@ -9,6 +9,7 @@ import (
 	"context"
 
 	"github.com/yuriongit/tday/internal/app"
+	"github.com/yuriongit/tday/internal/ui"
 )
 
 // ListAll lists all persisted tasks.
@@ -18,7 +19,7 @@ func ListAll(rootCtx context.Context, db app.Database) error {
 		return err
 	}
 
-	outputAllTasks(tasks)
+	ui.TaskOutput.All(tasks)
 
 	return nil
 }

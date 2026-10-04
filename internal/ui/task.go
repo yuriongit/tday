@@ -3,35 +3,23 @@ Package task offers the CRUD functionality for
 tasks, currently offers the functionality to
 create and read all tasks.
 */
-package task
+package ui
 
 import (
 	"fmt"
-	"os"
-	"os/exec"
-	"runtime"
 	"time"
 
 	"github.com/yuriongit/tday/internal/domain"
 )
 
-/*
-clearTerminal clears the previous output from
-the terminal.
-*/
-func clearTerminal() {
-	var cmd *exec.Cmd
+type Task struct {
+	New func(t *domain.Task)
+	All func(t []domain.Task)
+}
 
-	if runtime.GOOS == "windows" {
-		cmd = exec.Command("cmd", "/c", "cls")
-	} else {
-		cmd = exec.Command("clear")
-	}
-
-	cmd.Stdout = os.Stdout
-	if err := cmd.Run(); err != nil {
-		return
-	}
+var TaskOutput = Task{
+	New: outputNewTask,
+	All: outputAllTasks,
 }
 
 /*
@@ -102,13 +90,13 @@ func outputAllTasks(tasks []domain.Task) {
 		dueAt := (*task.InputData)[domain.DueAtField]
 		completedAt := task.Metadata.CompletedAt
 		time := task.Metadata.CreatedAt.Format(domain.TimeLayouts[1])
-		
-		fmt.Printf("• {%d} %s: %q\n", (idx+1), label, title)
+
+		fmt.Printf("• {%d} %s: %q\n", (idx + 1), label, title)
 		if desc != "" {
 			fmt.Printf("   > Desc: %q\n", desc)
 		}
 		if !completedAt.IsZero() {
-  		fmt.Printf("   > Completed at: %s\n", completedAt.Format(domain.TimeLayouts[1]))
+			fmt.Printf("   > Completed at: %s\n", completedAt.Format(domain.TimeLayouts[1]))
 		}
 		fmt.Printf("   > Created at: %s | Due at: %s\n\n", time, dueAt)
 	}

@@ -10,6 +10,7 @@ import (
 	"fmt"
 
 	"github.com/yuriongit/tday/internal/app"
+	"github.com/yuriongit/tday/internal/ui"
 )
 
 /*
@@ -30,7 +31,7 @@ func Create(
 	}
 
 	// Output created task
-	outputNewTask(task)
+	ui.TaskOutput.New(task)
 
 	return nil
 }
