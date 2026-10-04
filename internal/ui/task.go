@@ -29,7 +29,6 @@ outputNewTask outputs the created task and it's
 metadata in a formatted manner.
 */
 func outputNewTask(t *domain.Task) {
-	clearTerminal()
 	fmt.Println("...")
 	fmt.Println("New task created!\nTask details include:")
 
