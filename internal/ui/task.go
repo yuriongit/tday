@@ -7,13 +7,12 @@ package ui
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/yuriongit/tday/internal/domain"
 )
 
 type Task struct {
-	New    func(t *domain.Task)
+	New    func(id *domain.ID)
 	All    func(t []domain.Task)
 	Remove func(id domain.ID)
 }
@@ -28,40 +27,9 @@ var TaskOutput = Task{
 outputNewTask outputs the created task and it's
 metadata in a formatted manner.
 */
-func outputNewTask(t *domain.Task) {
-	fmt.Println("...")
-	fmt.Println("New task created!\nTask details include:")
-
-	fmt.Println("————————————————————————————")
-
-	fmt.Println("Metadata:")
-	fmt.Printf("i. UUID:\n  > %s\n", t.Metadata.UUID)
-	fmt.Printf(
-		"i. Created at:\n  > %s\n  > %s\n",
-		time.Now().Format("Jan 2, 2006"),
-		time.Now().Format(domain.TimeLayouts[1]),
-	)
-
-	fmt.Print("——————————————|")
-
-	fmt.Println("\nData:")
-	for _, field := range domain.AllFields {
-		v, exists := (*t.InputData)[field.ID]
-
-		if !exists || v == "" {
-			continue
-		}
-
-		fmt.Printf("• %s:\n", field.Name)
-
-		if field.ID == "due_at" {
-			fmt.Printf("  > %v\n", v)
-		} else {
-			fmt.Printf("  > %q\n", v)
-		}
-	}
-
-	fmt.Println("————————————————————————————")
+func outputNewTask(id *domain.ID) {
+  fmt.Println("———————————————————————————————————")
+	fmt.Printf("✓ Task %q created successfully.\n", id)
 }
 
 /*
@@ -69,11 +37,6 @@ outputAllTasks outputs all the persisted tasks in
 a formatted manner.
 */
 func outputAllTasks(tasks []domain.Task) {
-	if len(tasks) == 0 {
-		fmt.Println("No tasks found")
-		return
-	}
-
 	tasksAmt := len(tasks)
 
 	fmt.Printf(
@@ -90,18 +53,24 @@ func outputAllTasks(tasks []domain.Task) {
 		desc := (*task.InputData)[domain.DescriptionField]
 		dueAt := (*task.InputData)[domain.DueAtField]
 		completedAt := task.Metadata.CompletedAt
-		time := task.Metadata.CreatedAt.Format(domain.TimeLayouts[1])
+		createdAt := task.Metadata.CreatedAt.Format(domain.TimeLayouts[1])
 		uuid := task.Metadata.UUID 
 
-		fmt.Printf("• {%d} %s: %q\n", (idx + 1), label, title)
-		fmt.Printf("   > UUID: %q\n", uuid)
+		fmt.Printf("{%s} %s: %q\n", uuid, label, title)
+		
 		if desc != "" {
-			fmt.Printf("   > Desc: %q\n", desc)
+			fmt.Printf("  > Desc: %q\n", desc)
 		}
+		
 		if !completedAt.IsZero() {
-			fmt.Printf("   > Completed at: %s\n", completedAt.Format(domain.TimeLayouts[1]))
+			fmt.Printf("  > Completed at: %s (Created at: %s)\n", completedAt.Format(domain.TimeLayouts[1]), createdAt)
+		} else {
+  		fmt.Printf("  > Due at: %s (Created at: %s)\n", dueAt, createdAt)
 		}
-		fmt.Printf("   > Created at: %s | Due at: %s\n\n", time, dueAt)
+		
+		if idx != tasksAmt - 1 {
+		  fmt.Println()
+		}
 	}
 }
 

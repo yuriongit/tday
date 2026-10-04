@@ -129,24 +129,24 @@ func GetFieldDef(id TaskFieldType) *FieldDefinition {
 
 func validateLabel(s string) error {
 	if len(s) == 0 {
-		return fmt.Errorf("label cannot be empty")
+		return fmt.Errorf("Label cannot be empty")
 	}
 	if len(s) > 50 {
-		return fmt.Errorf("label cannot exceed 50 characters")
+		return fmt.Errorf("Label cannot exceed 50 characters")
 	}
 	return nil
 }
 
 func validateTitle(s string) error {
 	if len(s) == 0 {
-		return fmt.Errorf("title cannot be empty")
+		return fmt.Errorf("Title cannot be empty")
 	}
 	return nil
 }
 
 func validateDescription(s string) error {
 	if len(s) > 500 {
-		return fmt.Errorf("description cannot exceed 500 characters")
+		return fmt.Errorf("Description cannot exceed 500 characters")
 	}
 	return nil
 }
@@ -159,7 +159,7 @@ func validateDueAt(s string) error {
 	}
 
 	return fmt.Errorf(
-		"invalid time format. \nFormats include: '%s' and '%s'",
+		"Invalid format. Examples: '%s' and '%s'",
 		TimeLayouts[0],
 		TimeLayouts[1],
 	)

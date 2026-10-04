@@ -27,11 +27,11 @@ func Create(
 
 	// Persist the created task
 	if err := db.InsertTask(rootCtx, task); err != nil {
-		return fmt.Errorf("persistence error: %s", err)
+		return fmt.Errorf("✗ %s", err)
 	}
 
 	// Output created task
-	ui.TaskOutput.New(task)
+	ui.TaskOutput.New(&task.Metadata.UUID)
 
 	return nil
 }

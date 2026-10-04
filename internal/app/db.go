@@ -70,19 +70,19 @@ func (db *SupabaseDB) newPool(tempCtx context.Context) error {
 
 	// Load environment variables from .env file.
 	if err := godotenv.Load(".env"); err != nil {
-		return fmt.Errorf("env load error: %w", err)
+		return fmt.Errorf("Environment variables load error: %w", err)
 	}
 
 	// Retrieves DB_URI environment variable.
 	dbURI := os.Getenv(domain.DBConnStringVarName)
 	if dbURI == "" {
-		return fmt.Errorf("missing '%s'", domain.DBConnStringVarName)
+		return fmt.Errorf("Missing '%s'", domain.DBConnStringVarName)
 	}
 
 	// Creates a Postgres config.
 	config, err := pgxpool.ParseConfig(dbURI)
 	if err != nil {
-		return fmt.Errorf("config error: %w", err)
+		return fmt.Errorf("Configuration Error: %w", err)
 	}
 
 	ctx, cancel := context.WithTimeout(tempCtx, 5*time.Second)
@@ -91,7 +91,7 @@ func (db *SupabaseDB) newPool(tempCtx context.Context) error {
 	// Creates a connection pool.
 	pool, err := pgxpool.NewWithConfig(ctx, config)
 	if err != nil {
-		return fmt.Errorf("connection error: %w", err)
+		return fmt.Errorf("Supabase Connection Error: %w", err)
 	}
 
 	/*
@@ -138,13 +138,13 @@ func (db *SupabaseDB) InsertTask(rootCtx context.Context, task *domain.Task) err
 
 	cmdTag, err := db.Pool.Exec(ctx, query, args...)
 	if err != nil {
-		return fmt.Errorf("insert execution error: %w", err)
+		return fmt.Errorf("Insert Execution Error: %w", err)
 	}
 
 	// Check for insertion failure; if 0 rows were
 	// affected
 	if cmdTag.RowsAffected() == 0 {
-		return fmt.Errorf("insert failed: no rows affected")
+		return fmt.Errorf("Insert Failed: No rows affected")
 	}
 
 	return nil
@@ -190,7 +190,7 @@ func (db *SupabaseDB) QueryAllTasks(rootCtx context.Context) ([]domain.Task, err
 
 	rows, err := db.Pool.Query(ctx, query)
 	if err != nil {
-		return nil, fmt.Errorf("failed to query all tasks: %w", err)
+		return nil, fmt.Errorf("Failed to query all tasks: %w", err)
 	}
 	defer rows.Close()
 
@@ -211,7 +211,7 @@ func (db *SupabaseDB) QueryAllTasks(rootCtx context.Context) ([]domain.Task, err
 		}
 
 		if err := rows.Scan(scanArgs...); err != nil {
-			return nil, fmt.Errorf("failed to scan task: %w", err)
+			return nil, fmt.Errorf("Failed to scan task: %w", err)
 		}
 
 		// Populate InputData map dynamically from AllFields
@@ -225,22 +225,30 @@ func (db *SupabaseDB) QueryAllTasks(rootCtx context.Context) ([]domain.Task, err
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("error iterating rows: %w", err)
+		return nil, fmt.Errorf("Error iterating rows: %w", err)
 	}
 
+	if len(tasks) == 0 {
+		return nil, fmt.Errorf("No tasks found")
+	}
+	
 	return tasks, nil
 }
 
 // DeleteTask deletes a task from the database.
 func (db *SupabaseDB) DeleteTask(rootCtx context.Context, id domain.ID) error {
+  if len(id) != domain.IDLen {
+    return fmt.Errorf("Invalid task ID; Task ID must be 5 characters.")
+  }
+  
 	cmd, err := db.Pool.Exec(rootCtx, "DELETE FROM tasks WHERE uuid = $1", id)
 	
 	if cmd.RowsAffected() == 0 {
-		return fmt.Errorf("task not found")
+		return fmt.Errorf("Task %q does not exist.", id)
 	}
 	
 	if err != nil {
-		return fmt.Errorf("failed to delete task: %w", err)
+		return fmt.Errorf("Failed to delete task: %w", err)
 	}
 	return nil
 }

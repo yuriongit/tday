@@ -48,7 +48,7 @@ func GetEnvVariable(varName string) (
 	// Load environment variables from .env file.
 	if err := godotenv.Load(".env"); err != nil {
 		fmt.Println("")
-		return "", fmt.Errorf("env load error: %w\nmaybe run 'tday init'?", err)
+		return "", fmt.Errorf("Environment variables load error: %w\nMaybe run 'tday init'?", err)
 	}
 
 	// Retrieves DB_URI environment variable.
@@ -60,7 +60,7 @@ var configPath string
 func constructConfigPath() error {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		return fmt.Errorf("failed to get home directory: %w", err)
+		return fmt.Errorf("Failed to get home directory: %w", err)
 	}
 
 	configPath = filepath.Join(homeDir, ".tday")

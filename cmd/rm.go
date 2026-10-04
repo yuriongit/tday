@@ -6,6 +6,8 @@ Copyright © 2026 Yuri Okeren <yuri.dev44@outlook.com>
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 	"github.com/yuriongit/tday/internal/domain"
 	"github.com/yuriongit/tday/internal/task"
@@ -18,6 +20,11 @@ var rmCmd = &cobra.Command{
 	Long:  `TODO: Implement later`,
 	RunE: func(_ *cobra.Command, args []string) error {
 		app := GetApp()
+		
+		if len(args) == 0 {
+  		return fmt.Errorf("No task ID provided")
+		}
+		
 		id := domain.ID(args[0])
 
 		return task.Remove(
