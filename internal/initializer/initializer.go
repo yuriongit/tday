@@ -29,7 +29,7 @@ InitConfig initializes the TDay configuration directory and .env file.
 func InitConfig() error {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		return fmt.Errorf("failed to get home directory: %w", err)
+		return fmt.Errorf("Failed to get home directory: %w", err)
 	}
 
 	tdayDir := filepath.Join(homeDir, ".tday")
@@ -39,7 +39,7 @@ func InitConfig() error {
 		fmt.Println("✓ Found existing ~/.tday directory")
 	} else {
 		if err := os.MkdirAll(tdayDir, 0700); err != nil {
-			return fmt.Errorf("failed to create ~/.tday directory: %w", err)
+			return fmt.Errorf("Failed to create ~/.tday directory: %w", err)
 		}
 		fmt.Println("✓ Created ~/.tday directory")
 	}
@@ -60,18 +60,18 @@ func setupEnvFile() error {
 		_, writeErr := f.WriteString(envExample)
 		f.Close()
 		if writeErr != nil {
-			return fmt.Errorf("failed to write .env file: %w", writeErr)
+			return fmt.Errorf("Failed to write .env file: %w", writeErr)
 		}
 		fmt.Println("✓ Created .env file in ~/.tday")
 	} else if os.IsExist(err) {
 		fmt.Println("✓ Found existing .env file in ~/.tday")
 	} else {
-		return fmt.Errorf("failed to check or create .env file: %w", err)
+		return fmt.Errorf("Failed to check or create .env file: %w", err)
 	}
 
 	// Load relative .env file
 	if err := godotenv.Load(); err != nil {
-		return fmt.Errorf("failed to read .env file: %w", err)
+		return fmt.Errorf("✗ Failed to read .env file: %w", err)
 	}
 
 	dbConnVar := os.Getenv(domain.DBConnStringVarName)

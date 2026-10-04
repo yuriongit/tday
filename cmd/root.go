@@ -6,6 +6,7 @@ Copyright © 2026 Yuri Okeren <yuri.dev44@outlook.com>
 package cmd
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -31,7 +32,7 @@ To get started, run:
 `,
 	PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
 		// Skip app init for "init" command
-		if cmd.Name() == "init" {
+		if cmd.Name() == "init" || cmd.Name() == "help" {
 			return nil
 		}
 
@@ -52,7 +53,8 @@ To get started, run:
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
-		os.Exit(1)
+  	fmt.Fprintf(os.Stderr, "✗ %s\n", err.Error())
+		return
 	}
 
 	// Global cleanup
@@ -63,6 +65,9 @@ func Execute() {
 }
 
 func init() {
+  // Suppress usage output
+	rootCmd.SilenceUsage = true
+	rootCmd.SilenceErrors = true
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.

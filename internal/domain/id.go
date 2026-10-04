@@ -11,6 +11,8 @@ identified type for fields.
 */
 type ID string
 
+var IDLen = 5
+
 /*
 String is the method for casting an ID to
 a string.
