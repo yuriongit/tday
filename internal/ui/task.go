@@ -92,8 +92,10 @@ func outputAllTasks(tasks []domain.Task) {
 		dueAt := (*task.InputData)[domain.DueAtField]
 		completedAt := task.Metadata.CompletedAt
 		time := task.Metadata.CreatedAt.Format(domain.TimeLayouts[1])
+		uuid := task.Metadata.UUID 
 
 		fmt.Printf("• {%d} %s: %q\n", (idx + 1), label, title)
+		fmt.Printf("   > UUID: %q\n", uuid)
 		if desc != "" {
 			fmt.Printf("   > Desc: %q\n", desc)
 		}
