@@ -13,13 +13,15 @@ import (
 )
 
 type Task struct {
-	New func(t *domain.Task)
-	All func(t []domain.Task)
+	New    func(t *domain.Task)
+	All    func(t []domain.Task)
+	Remove func(id domain.ID)
 }
 
 var TaskOutput = Task{
-	New: outputNewTask,
-	All: outputAllTasks,
+	New:    outputNewTask,
+	All:    outputAllTasks,
+	Remove: outputDeletedTask,
 }
 
 /*
@@ -100,4 +102,12 @@ func outputAllTasks(tasks []domain.Task) {
 		}
 		fmt.Printf("   > Created at: %s | Due at: %s\n\n", time, dueAt)
 	}
+}
+
+/*
+outputDeletedTask outputs the created task and it's
+metadata in a formatted manner.
+*/
+func outputDeletedTask(id domain.ID) {
+	fmt.Printf("✓ Task %q deleted successfully.\n", id)
 }
