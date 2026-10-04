@@ -28,6 +28,7 @@ type Database interface {
 	// CRUD methods
 	InsertTask(rootCtx context.Context, task *domain.Task) error
 	QueryAllTasks(rootCtx context.Context) ([]domain.Task, error)
+	DeleteTask(rootCtx context.Context, id domain.ID) error
 
 	// Remaining CRUD methods
 	/* QueryTask()
@@ -228,6 +229,20 @@ func (db *SupabaseDB) QueryAllTasks(rootCtx context.Context) ([]domain.Task, err
 	}
 
 	return tasks, nil
+}
+
+// DeleteTask deletes a task from the database.
+func (db *SupabaseDB) DeleteTask(rootCtx context.Context, id domain.ID) error {
+	cmd, err := db.Pool.Exec(rootCtx, "DELETE FROM tasks WHERE uuid = $1", id)
+	
+	if cmd.RowsAffected() == 0 {
+		return fmt.Errorf("task not found")
+	}
+	
+	if err != nil {
+		return fmt.Errorf("failed to delete task: %w", err)
+	}
+	return nil
 }
 
 // ---------------
