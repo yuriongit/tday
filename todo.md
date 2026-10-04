@@ -3,7 +3,10 @@
 ## Features
 
 - Add severity field
-- Add color to output
+- Add color to all output
+- Add task type options (dev/hw/reg/sys), depending on the type the user selects,
+  each type will prompt the user with
+  specific fields tailored to each task type.
 
 ## Commands
 
@@ -11,27 +14,24 @@
 - [ ] `tday done`
 - [ ] `tday rm`
 
-Expiration
+---
+
+### Expiration
 
 - [ ] `tday ls exp`
 - [ ] `tday rm exp {#}`
 - [ ] `tday done exp {#}`
+- When expired tasks are outputted: the creation date will be included, TTL,
+  alongside it's original due date (`due_at` field). Expired tasks will be
+  ordered by it's TTL.
 
-Expired tasks will explicitly list the date it was created
-and tasks will be sorted by the TTL
-on and the time it was due at will show the overdue label
-and the TTL. After the TTL the task will self-destruct.
-
-Completion
+### Completion
 
 - [ ] `tday done {#}`
 - [ ] `tday ls done`
-- [ ] `tday done {#, #, #, #}`
 
-Updates
+<!--- [ ] `tday done {# # # #}`-->
+
+### Updates
 
 - [ ] `tday upd {#}`
-
-Tmrw flag (maybe adding...)
-
-- [ ] `tday cmd --tmrw`
