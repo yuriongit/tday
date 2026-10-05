@@ -54,10 +54,10 @@ func collectTaskUpdateInputs(
 			value := scanner.Text()
 
 			if value == "" {
-			  // skip to next field because of updates
+				// skip to next field because of updates
 				break
 			}
-			
+
 			// Validate using the field's validation function
 			if err := fieldDef.Validate(value, true); err != nil {
 				fmt.Printf("✗ %s\n", err.Error())

@@ -355,7 +355,7 @@ func buildInsertTaskQuery(task *domain.Task) (string, []any, error) {
 	return query, args, nil
 }
 
-
+// QueryTask queries a tasks from the database.
 func (db *SupabaseDB) QueryTask(
 	rootCtx context.Context,
 	id domain.ID,
@@ -573,7 +573,7 @@ func (db *SupabaseDB) DeleteTask(
 /*
 buildUpdateTaskQuery dynamically constructs the UPDATE statement and argument slice.
 
-The column identifiers are safely quoted, and values are passed sequentially 
+The column identifiers are safely quoted, and values are passed sequentially
 as $2, $3, etc. Parameter $1 is always reserved for the task UUID in the WHERE clause.
 */
 func buildUpdateTaskQuery(
@@ -611,8 +611,8 @@ func buildUpdateTaskQuery(
 /*
 UpdateTask modifies an existing task in the database using its UUID.
 
-It utilizes buildUpdateTaskQuery to construct the dynamic SQL statement 
-and parameters, executes the update within a timeout context, and verifies 
+It utilizes buildUpdateTaskQuery to construct the dynamic SQL statement
+and parameters, executes the update within a timeout context, and verifies
 that the target task exists.
 */
 func (db *SupabaseDB) UpdateTask(

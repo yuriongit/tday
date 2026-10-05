@@ -1,4 +1,3 @@
-
 /*
 Package cmd holds all of TDay's commands.
 
@@ -49,4 +48,3 @@ func init() {
 	// is called directly, e.g.:
 	// newCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
-

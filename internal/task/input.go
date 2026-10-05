@@ -29,9 +29,9 @@ func collectTaskInputs(
 	for _, fieldDef := range domain.AllFields {
 		for {
 			if !fieldDef.Required {
-				fmt.Printf("? %s (opt.):\n  > ", fieldDef.Name)
+				fmt.Printf("?. %s (opt.):\n  > ", fieldDef.Name)
 			} else {
-				fmt.Printf("? %s:\n  > ", fieldDef.Name)
+				fmt.Printf("?. %s:\n  > ", fieldDef.Name)
 			}
 
 			if !scanner.Scan() {
@@ -51,5 +51,6 @@ func collectTaskInputs(
 			break
 		}
 	}
+
 	return input
 }

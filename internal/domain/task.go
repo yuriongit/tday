@@ -146,7 +146,7 @@ func validateLabel(s string, update bool) error {
 func validateTitle(s string, update bool) error {
 	switch update {
 	case false:
-  	return nil
+		return nil
 	case true:
 		if len(s) == 0 {
 			return fmt.Errorf("Title cannot be empty")
