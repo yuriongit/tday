@@ -82,7 +82,7 @@ func setupEnvFile() error {
 	dbConnVar := os.Getenv(domain.DBConnStringVarName)
 	if strings.Contains(dbConnVar, envExampleValue) {
 		fmt.Printf(
-			"◌ Please update %q in ~/.tday/.env with your actual Supabase URI\n",
+			"◌ Please update %q in ~/.tday/.env with your own actual values\n",
 			domain.DBConnStringVarName,
 		)
 	} else {

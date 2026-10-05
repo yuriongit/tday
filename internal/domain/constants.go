@@ -25,4 +25,4 @@ var TimeLayouts = []string{
 DBConnStringVarName is the name of the connection
 string environment variable for the database.
 */
-var DBConnStringVarName = "SUPABASE_URI"
+var DBConnStringVarName = "POSTGRES_DIRECT_URI"
