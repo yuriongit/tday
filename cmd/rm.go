@@ -20,11 +20,11 @@ var rmCmd = &cobra.Command{
 	Long:  `TODO: Implement later`,
 	RunE: func(_ *cobra.Command, args []string) error {
 		app := GetApp()
-		
+
 		if len(args) == 0 {
-  		return fmt.Errorf("No task ID provided")
+			return fmt.Errorf("No task ID provided")
 		}
-		
+
 		id := domain.ID(args[0])
 
 		return task.Remove(

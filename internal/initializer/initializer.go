@@ -56,18 +56,23 @@ func InitConfig() error {
 func setupEnvFile() error {
 	// os.O_EXCL creates the file atomically or fails if it already exists
 	f, err := os.OpenFile(".env", os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0600)
-	if err == nil {
-		_, writeErr := f.WriteString(envExample)
-		f.Close()
-		if writeErr != nil {
-			return fmt.Errorf("Failed to write .env file: %w", writeErr)
-		}
-		fmt.Println("✓ Created .env file in ~/.tday")
-	} else if os.IsExist(err) {
+
+	switch {
+	case os.IsExist(err):
 		fmt.Println("✓ Found existing .env file in ~/.tday")
-	} else {
+		return nil
+	case err != nil:
 		return fmt.Errorf("Failed to check or create .env file: %w", err)
 	}
+
+	_, writeErr := f.WriteString(envExample)
+	if err := f.Close(); err != nil {
+		return fmt.Errorf("Failed to close .env file: %w", err)
+	}
+	if writeErr != nil {
+		return fmt.Errorf("Failed to write .env file: %w", writeErr)
+	}
+	fmt.Println("✓ Created .env file in ~/.tday")
 
 	// Load relative .env file
 	if err := godotenv.Load(); err != nil {

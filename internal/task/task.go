@@ -22,8 +22,8 @@ func newTask(
 
 	return &domain.Task{
 		Metadata: domain.TaskMetadata{
-			UUID:      id,
-			CreatedAt: time.Now(),
+			UUID:        id,
+			CreatedAt:   time.Now(),
 			CompletedAt: time.Time{},
 		},
 		InputData: &taskInputs,

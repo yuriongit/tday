@@ -42,7 +42,7 @@ func collectTaskInputs(
 
 			// Validate using the field's validation function
 			if err := fieldDef.Validate(value); err != nil {
-				fmt.Printf("✗ %s\n",err.Error())
+				fmt.Printf("✗ %s\n", err.Error())
 				// retry logic here
 				continue
 			}

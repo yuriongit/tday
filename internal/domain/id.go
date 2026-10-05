@@ -11,6 +11,7 @@ identified type for fields.
 */
 type ID string
 
+// IDLen is the length of generated UUIDs.
 var IDLen = 5
 
 /*

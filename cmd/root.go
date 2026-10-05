@@ -53,7 +53,7 @@ To get started, run:
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
-  	fmt.Fprintf(os.Stderr, "✗ %s\n", err.Error())
+		fmt.Fprintf(os.Stderr, "✗ %s\n", err.Error())
 		return
 	}
 
@@ -65,7 +65,7 @@ func Execute() {
 }
 
 func init() {
-  // Suppress usage output
+	// Suppress usage output
 	rootCmd.SilenceUsage = true
 	rootCmd.SilenceErrors = true
 	// Here you will define your flags and configuration settings.

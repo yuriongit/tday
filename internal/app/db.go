@@ -231,22 +231,22 @@ func (db *SupabaseDB) QueryAllTasks(rootCtx context.Context) ([]domain.Task, err
 	if len(tasks) == 0 {
 		return nil, fmt.Errorf("No tasks found")
 	}
-	
+
 	return tasks, nil
 }
 
 // DeleteTask deletes a task from the database.
 func (db *SupabaseDB) DeleteTask(rootCtx context.Context, id domain.ID) error {
-  if len(id) != domain.IDLen {
-    return fmt.Errorf("Invalid task ID; Task ID must be 5 characters.")
-  }
-  
-	cmd, err := db.Pool.Exec(rootCtx, "DELETE FROM tasks WHERE uuid = $1", id)
-	
-	if cmd.RowsAffected() == 0 {
-		return fmt.Errorf("Task %q does not exist.", id)
+	if len(id) != domain.IDLen {
+		return fmt.Errorf("Invalid task ID; Task ID must be 5 characters")
 	}
-	
+
+	cmd, err := db.Pool.Exec(rootCtx, "DELETE FROM tasks WHERE uuid = $1", id)
+
+	if cmd.RowsAffected() == 0 {
+		return fmt.Errorf("Task %q does not exist", id)
+	}
+
 	if err != nil {
 		return fmt.Errorf("Failed to delete task: %w", err)
 	}

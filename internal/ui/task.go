@@ -1,7 +1,5 @@
 /*
-Package task offers the CRUD functionality for
-tasks, currently offers the functionality to
-create and read all tasks.
+Package ui provides the UI for TDay.
 */
 package ui
 
@@ -11,12 +9,17 @@ import (
 	"github.com/yuriongit/tday/internal/domain"
 )
 
+// Task defines the structure for task output functions.
 type Task struct {
 	New    func(id *domain.ID)
 	All    func(t []domain.Task)
 	Remove func(id domain.ID)
 }
 
+/*
+TaskOutput holds the functions responsible for any task-
+related output (besides input collection).
+*/
 var TaskOutput = Task{
 	New:    outputNewTask,
 	All:    outputAllTasks,
@@ -28,7 +31,7 @@ outputNewTask outputs the created task and it's
 metadata in a formatted manner.
 */
 func outputNewTask(id *domain.ID) {
-  fmt.Println("———————————————————————————————————")
+	fmt.Println("———————————————————————————————————")
 	fmt.Printf("✓ Task %q created successfully.\n", id)
 }
 
@@ -54,22 +57,22 @@ func outputAllTasks(tasks []domain.Task) {
 		dueAt := (*task.InputData)[domain.DueAtField]
 		completedAt := task.Metadata.CompletedAt
 		createdAt := task.Metadata.CreatedAt.Format(domain.TimeLayouts[1])
-		uuid := task.Metadata.UUID 
+		uuid := task.Metadata.UUID
 
 		fmt.Printf("{%s} %s: %q\n", uuid, label, title)
-		
+
 		if desc != "" {
 			fmt.Printf("  > Desc: %q\n", desc)
 		}
-		
+
 		if !completedAt.IsZero() {
 			fmt.Printf("  > Completed at: %s (Created at: %s)\n", completedAt.Format(domain.TimeLayouts[1]), createdAt)
 		} else {
-  		fmt.Printf("  > Due at: %s (Created at: %s)\n", dueAt, createdAt)
+			fmt.Printf("  > Due at: %s (Created at: %s)\n", dueAt, createdAt)
 		}
-		
-		if idx != tasksAmt - 1 {
-		  fmt.Println()
+
+		if idx != tasksAmt-1 {
+			fmt.Println()
 		}
 	}
 }
