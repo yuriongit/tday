@@ -7,7 +7,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/yuriongit/tday/internal/initializer"
+	"github.com/yuriongit/tday/internal/cnf"
 )
 
 // initCmd represents the init command
@@ -16,7 +16,7 @@ var initCmd = &cobra.Command{
 	Short: "Initializes tday config",
 	Long:  `TODO: Implement later`,
 	RunE: func(_ *cobra.Command, _ []string) error {
-		return initializer.InitConfig()
+		return cnf.InitConfig()
 	},
 }
 

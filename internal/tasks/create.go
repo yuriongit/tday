@@ -1,16 +1,41 @@
 /*
-Package task offers the CRUD functionality for
+Package tasks offers the CRUD functionality for
 tasks, currently offers the functionality to
 create and read all tasks.
 */
-package task
+package tasks
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/yuriongit/tday/internal/app"
 	"github.com/yuriongit/tday/internal/domain"
+	"github.com/yuriongit/tday/internal/ui"
 )
+
+/*
+Create creates and persists a new task.
+*/
+func Create(
+	rootCtx context.Context,
+	inputHandler *app.TaskInputHandler,
+	taskIDGen *app.TaskIDGenerator,
+	db *app.SupabaseDB,
+) error {
+	// Collect inputs from user and creates a task
+	task := newTask(inputHandler, taskIDGen)
+
+	// Persist the created task
+	if err := db.InsertTask(rootCtx, task); err != nil {
+		return fmt.Errorf("✗ %s", err)
+	}
+
+	// Output created task
+	ui.TaskOutput.New(&task.Metadata.UUID)
+
+	return nil
+}
 
 /*
 collectTaskInputs collects user input to

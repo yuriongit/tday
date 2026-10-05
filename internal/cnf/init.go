@@ -1,11 +1,11 @@
 /*
 Package initializer is for initializing TDay's
-config. This package prepares the needed
+ This package prepares the needed
 environment variables for the application to
 use. Also, this package directly enables global
 usage of TDay.
 */
-package initializer
+package cnf
 
 import (
 	"fmt"
@@ -14,7 +14,6 @@ import (
 	"strings"
 
 	"github.com/joho/godotenv"
-	"github.com/yuriongit/tday/internal/config"
 	"github.com/yuriongit/tday/internal/domain"
 )
 
@@ -45,7 +44,7 @@ func InitConfig() error {
 	}
 
 	// Move into ~/.tday early so subsequent file operations are relative
-	if err := config.ChdirToConfigDir(); err != nil {
+	if err := ChdirToConfigDir(); err != nil {
 		return err
 	}
 

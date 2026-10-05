@@ -7,7 +7,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/yuriongit/tday/internal/task"
+	"github.com/yuriongit/tday/internal/tasks"
 )
 
 // newCmd represents the new command.
@@ -18,7 +18,7 @@ var newCmd = &cobra.Command{
 	RunE: func(_ *cobra.Command, _ []string) error {
 		app := GetApp()
 
-		return task.Create(app.Ctx,
+		return tasks.Create(app.Ctx,
 			app.TaskInputHandler,
 			app.TaskIDGenerator,
 			app.Database,

@@ -2,7 +2,7 @@
 Package config provides helpers for working
 with TDay's configuration directory.
 */
-package config
+package cnf
 
 import (
 	"errors"

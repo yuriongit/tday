@@ -20,5 +20,5 @@ Generate implements IDGenerator's Generate
 method for TaskIDGenerator.
 */
 func (*TaskIDGenerator) Generate() domain.ID {
-	return domain.ID(uuid.New().String()[:domain.IDLen])
+	return domain.ID(uuid.New().String()[:domain.TaskIDLen])
 }

@@ -7,7 +7,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/yuriongit/tday/internal/task"
+	"github.com/yuriongit/tday/internal/tasks"
 )
 
 // lsCmd represents the ls command
@@ -19,7 +19,7 @@ var lsCmd = &cobra.Command{
 	RunE: func(_ *cobra.Command, _ []string) error {
 		app := GetApp()
 
-		return task.ListAll(app.Ctx, app.Database)
+		return tasks.ListAll(app.Ctx, app.Database)
 	},
 }
 

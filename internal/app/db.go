@@ -14,7 +14,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
-	"github.com/yuriongit/tday/internal/config"
+	"github.com/yuriongit/tday/internal/cnf"
 	"github.com/yuriongit/tday/internal/domain"
 )
 
@@ -179,7 +179,7 @@ func (db *SupabaseDB) newPool(tempCtx context.Context) error {
 	}
 
 	// Change into the application's configuration directory.
-	if err := config.ChdirToConfigDir(); err != nil {
+	if err := cnf.ChdirToConfigDir(); err != nil {
 		return err
 	}
 
@@ -541,10 +541,10 @@ func (db *SupabaseDB) DeleteTask(
 	)
 	defer cancel()
 
-	if len(id) != domain.IDLen {
+	if len(id) != domain.TaskIDLen {
 		return fmt.Errorf(
 			"Invalid task ID: task ID must be %d characters",
-			domain.IDLen,
+			domain.TaskIDLen,
 		)
 	}
 
