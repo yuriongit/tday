@@ -47,7 +47,7 @@ func collectTaskInputs(
 				continue
 			}
 
-			input[fieldDef.ID] = value
+			input[string(fieldDef.ID)] = value
 			break
 		}
 	}

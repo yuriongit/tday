@@ -103,7 +103,8 @@ type TaskMetadata struct {
 TaskInputData contains the values provided
 for a task's fields.
 */
-type TaskInputData map[TaskFieldType]any
+// type TaskInputData map[TaskFieldType]any
+type TaskInputData map[string]any
 
 /*
 Task represents a task and its

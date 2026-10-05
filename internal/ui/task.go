@@ -51,10 +51,10 @@ func outputAllTasks(tasks []domain.Task) {
 	fmt.Println("—————————————————————————————————————")
 
 	for idx, task := range tasks {
-		label := (*task.InputData)[domain.LabelField]
-		title := (*task.InputData)[domain.TitleField]
-		desc := (*task.InputData)[domain.DescriptionField]
-		dueAt := (*task.InputData)[domain.DueAtField]
+		label := (*task.InputData)[string(domain.LabelField)]
+		title := (*task.InputData)[string(domain.TitleField)]
+		desc := (*task.InputData)[string(domain.DescriptionField)]
+		dueAt := (*task.InputData)[string(domain.DueAtField)]
 		completedAt := task.Metadata.CompletedAt
 		createdAt := task.Metadata.CreatedAt.Format(domain.TimeLayouts[1])
 		uuid := task.Metadata.UUID

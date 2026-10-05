@@ -18,25 +18,36 @@ import (
 	"github.com/yuriongit/tday/internal/domain"
 )
 
+const (
+	// metadataColumnCount is the number of columns managed by the application
+	// rather than by Task.InputData.
+	metadataColumnCount = 3
+
+	// databaseOperationTimeout is the maximum time allowed for a database
+	// operation before its context is cancelled.
+	databaseOperationTimeout = 5 * time.Second
+)
+
 /*
 Database defines connectivity and managerial
 methods for tasks.
 */
 type Database interface {
-	// Connectivity methods
+	// Connectivity methods.
 	Ping(rootCtx context.Context) error
 
-	// CRUD methods
+	// CRUD methods.
 	InsertTask(rootCtx context.Context, task *domain.Task) error
 	QueryAllTasks(rootCtx context.Context) ([]domain.Task, error)
 	DeleteTask(rootCtx context.Context, id domain.ID) error
 
-	// Remaining CRUD methods
-	/* QueryTask()
-	DeleteTask()
-	DeleteSetOfTask()
-	UpdateTask()
-	CompleteTask() */
+	// Remaining CRUD methods.
+	/*
+		QueryTask()
+		DeleteSetOfTask()
+		UpdateTask()
+		CompleteTask()
+	*/
 }
 
 // SupabaseDB implements the Database interface.
@@ -46,7 +57,7 @@ type SupabaseDB struct {
 
 /*
 NewSupabaseDB instantiates a new SupabaseDB
-struct.
+struct and opens a PostgreSQL connection pool.
 */
 func NewSupabaseDB(tempCtx context.Context) (*SupabaseDB, error) {
 	db := &SupabaseDB{}
@@ -58,69 +69,184 @@ func NewSupabaseDB(tempCtx context.Context) (*SupabaseDB, error) {
 	return db, nil
 }
 
-// ---------------
+// --------------------
+// Database helpers
+// --------------------
 
-// Connectivity operations
+/*
+quoteIdentifier quotes a PostgreSQL identifier.
 
-// newPool creates the connection pool.
-func (db *SupabaseDB) newPool(tempCtx context.Context) error {
-	// Change into config directory
-	if err := config.ChdirToConfigDir(); err != nil {
-		return err
+Column names cannot be supplied as normal PostgreSQL parameters such as $1.
+They must be part of the SQL string itself. These identifiers are safe here
+because they come from the trusted, compiled-in TasksSchema definition.
+
+The escaping also protects against accidentally including a double quote in
+a future schema name.
+*/
+func quoteIdentifier(identifier string) string {
+	return `"` + strings.ReplaceAll(identifier, `"`, `""`) + `"`
+}
+
+/*
+schemaColumns returns all task table columns in the order declared by
+domain.TasksSchema.
+
+The returned names are quoted PostgreSQL identifiers.
+*/
+func schemaColumns() []string {
+	columns := make([]string, 0, len(domain.TasksSchema.Columns))
+
+	for _, column := range domain.TasksSchema.Columns {
+		columns = append(columns, quoteIdentifier(column.Name))
 	}
 
-	// Load environment variables from .env file.
-	if err := godotenv.Load(".env"); err != nil {
-		return fmt.Errorf("Environment variables load error: %w", err)
+	return columns
+}
+
+/*
+inputSchemaColumns returns the task-input columns.
+
+The first three columns in TasksSchema are metadata columns:
+
+	uuid
+	created_at
+	completed_at
+
+All remaining columns are read from or written to Task.InputData.
+*/
+func inputSchemaColumns() []domain.Column {
+	if len(domain.TasksSchema.Columns) <= metadataColumnCount {
+		return nil
 	}
 
-	// Retrieves DB_URI environment variable.
-	dbURI := os.Getenv(domain.DBConnStringVarName)
-	if dbURI == "" {
-		return fmt.Errorf("Missing '%s'", domain.DBConnStringVarName)
+	return domain.TasksSchema.Columns[metadataColumnCount:]
+}
+
+/*
+validateTasksSchema verifies the assumptions used by the database methods.
+
+The database code relies on the first three schema columns being the metadata
+columns. Failing early here produces a clearer error than allowing INSERT and
+SELECT values to become misaligned.
+*/
+func validateTasksSchema() error {
+	if len(domain.TasksSchema.Columns) < metadataColumnCount {
+		return fmt.Errorf(
+			"Tasks schema must contain at least %d columns",
+			metadataColumnCount,
+		)
 	}
 
-	// Creates a Postgres config.
-	config, err := pgxpool.ParseConfig(dbURI)
-	if err != nil {
-		return fmt.Errorf("Configuration Error: %w", err)
+	expectedMetadataColumns := []string{
+		"uuid",
+		"created_at",
+		"completed_at",
 	}
 
-	// Use simple protocol instead of statement caching (CLI-friendly)
-	config.ConnConfig.DefaultQueryExecMode = pgx.QueryExecModeSimpleProtocol
+	for index, expectedName := range expectedMetadataColumns {
+		actualName := domain.TasksSchema.Columns[index].Name
 
-	// Aggressive cleanup for CLI tool with short-lived connections
-	config.MaxConns = 5
-	config.MinConns = 0
-	config.MaxConnIdleTime = 10 * time.Second
-
-	ctx, cancel := context.WithTimeout(tempCtx, 5*time.Second)
-	defer cancel()
-
-	// Creates a connection pool.
-	pool, err := pgxpool.NewWithConfig(ctx, config)
-	if err != nil {
-		return fmt.Errorf("Supabase Connection Error: %w", err)
+		if actualName != expectedName {
+			return fmt.Errorf(
+				"Invalid tasks schema: column %d must be %q, got %q",
+				index,
+				expectedName,
+				actualName,
+			)
+		}
 	}
 
-	/*
-		Assign the connection pool directly to the
-		SupabaseDB struct.
-	*/
-	db.Pool = pool
-
-	// Checks health of database via a ping.
-	if err := db.Ping(ctx); err != nil {
-		return err
+	for index, column := range domain.TasksSchema.Columns {
+		if strings.TrimSpace(column.Name) == "" {
+			return fmt.Errorf(
+				"Invalid tasks schema: column %d has an empty name",
+				index,
+			)
+		}
 	}
 
 	return nil
 }
 
-// Ping is the health check for the database.
-func (db *SupabaseDB) Ping(rootCtx context.Context) error {
-	ctx, cancel := context.WithTimeout(rootCtx, 5*time.Second)
+// --------------------
+// Connectivity
+// --------------------
+
+// newPool creates the PostgreSQL connection pool.
+func (db *SupabaseDB) newPool(tempCtx context.Context) error {
+	if err := validateTasksSchema(); err != nil {
+		return err
+	}
+
+	// Change into the application's configuration directory.
+	if err := config.ChdirToConfigDir(); err != nil {
+		return err
+	}
+
+	// Load environment variables from the .env file.
+	if err := godotenv.Load(".env"); err != nil {
+		return fmt.Errorf("Environment variables load error: %w", err)
+	}
+
+	// Retrieve the database connection string.
+	dbURI := os.Getenv(domain.DBConnStringVarName)
+	if dbURI == "" {
+		return fmt.Errorf("Missing %q", domain.DBConnStringVarName)
+	}
+
+	// Parse the PostgreSQL connection configuration.
+	poolConfig, err := pgxpool.ParseConfig(dbURI)
+	if err != nil {
+		return fmt.Errorf("Configuration error: %w", err)
+	}
+
+	// Use the simple protocol instead of pgx's prepared-statement cache.
+	// This is appropriate for a short-lived CLI application.
+	poolConfig.ConnConfig.DefaultQueryExecMode = pgx.QueryExecModeSimpleProtocol
+
+	// Keep the pool small because this is a sequential CLI application.
+	poolConfig.MaxConns = 5
+	poolConfig.MinConns = 0
+	poolConfig.MaxConnIdleTime = 10 * time.Second
+
+	// Use a bounded context while opening and validating the pool.
+	ctx, cancel := context.WithTimeout(
+		tempCtx,
+		databaseOperationTimeout,
+	)
 	defer cancel()
+
+	// Create the connection pool.
+	pool, err := pgxpool.NewWithConfig(ctx, poolConfig)
+	if err != nil {
+		return fmt.Errorf("PostgreSQL connection error: %w", err)
+	}
+
+	// Store the pool on the database object.
+	db.Pool = pool
+
+	// Verify that the database is reachable.
+	if err := db.Ping(ctx); err != nil {
+		pool.Close()
+		db.Pool = nil
+
+		return fmt.Errorf("Database ping error: %w", err)
+	}
+
+	return nil
+}
+
+// Ping verifies that the database is reachable.
+func (db *SupabaseDB) Ping(rootCtx context.Context) error {
+	ctx, cancel := context.WithTimeout(
+		rootCtx,
+		databaseOperationTimeout,
+	)
+	defer cancel()
+
+	if db.Pool == nil {
+		return fmt.Errorf("Database pool is nil")
+	}
 
 	if err := db.Pool.Ping(ctx); err != nil {
 		return err
@@ -129,50 +255,95 @@ func (db *SupabaseDB) Ping(rootCtx context.Context) error {
 	return nil
 }
 
-// Connectivity operations
-
-// ---------------
-
-// CRUD operations:
+// --------------------
+// CRUD operations
+// --------------------
 
 /*
-InsertTask inserts a new task into the
-database.
+InsertTask inserts a new task into the database.
+
+The SQL column list is generated from domain.TasksSchema. Runtime values are
+passed separately as PostgreSQL parameters, which prevents SQL injection.
 */
-func (db *SupabaseDB) InsertTask(rootCtx context.Context, task *domain.Task) error {
-	ctx, cancel := context.WithTimeout(rootCtx, 5*time.Second)
+func (db *SupabaseDB) InsertTask(
+	rootCtx context.Context,
+	task *domain.Task,
+) error {
+	ctx, cancel := context.WithTimeout(
+		rootCtx,
+		databaseOperationTimeout,
+	)
 	defer cancel()
 
-	query, args := db.buildInsertTaskQuery(task)
+	if task == nil {
+		return fmt.Errorf("Cannot insert a nil task")
+	}
+
+	if task.InputData == nil {
+		return fmt.Errorf("Cannot insert a task with nil input data")
+	}
+
+	query, args, err := buildInsertTaskQuery(task)
+	if err != nil {
+		return err
+	}
 
 	cmdTag, err := db.Pool.Exec(ctx, query, args...)
 	if err != nil {
-		return fmt.Errorf("Insert Execution Error: %w", err)
+		return fmt.Errorf("Insert execution error: %w", err)
 	}
 
-	// Check for insertion failure; if 0 rows were
-	// affected
-	if cmdTag.RowsAffected() == 0 {
-		return fmt.Errorf("Insert Failed: No rows affected")
+	if cmdTag.RowsAffected() != 1 {
+		return fmt.Errorf(
+			"Insert failed: expected 1 affected row, got %d",
+			cmdTag.RowsAffected(),
+		)
 	}
 
 	return nil
 }
 
-func (db *SupabaseDB) buildInsertTaskQuery(task *domain.Task) (string, []any) {
-	inputMap := *task.InputData
+/*
+buildInsertTaskQuery builds the INSERT statement and its arguments.
 
-	columns := []string{"uuid", "created_at", "completed_at"}
-	args := []any{task.Metadata.UUID, task.Metadata.CreatedAt, task.Metadata.CompletedAt}
-
-	for _, field := range domain.AllFields {
-		columns = append(columns, fmt.Sprintf(`"%s"`, field.ID))
-		args = append(args, inputMap[field.ID])
+The columns come from the trusted TasksSchema definition. The values are
+passed as PostgreSQL parameters using $1, $2, and so on.
+*/
+func buildInsertTaskQuery(task *domain.Task) (string, []any, error) {
+	if err := validateTasksSchema(); err != nil {
+		return "", nil, err
 	}
 
+	inputData := *task.InputData
+
+	// All schema columns are inserted in schema order.
+	columns := schemaColumns()
+
+	// The first three values are database metadata.
+	args := []any{
+		task.Metadata.UUID,
+		task.Metadata.CreatedAt,
+		task.Metadata.CompletedAt,
+	}
+
+	// The remaining values come from Task.InputData.
+	for _, column := range inputSchemaColumns() {
+		value, ok := inputData[column.Name]
+		if !ok {
+			return "", nil, fmt.Errorf(
+				"Missing task input value for column %q",
+				column.Name,
+			)
+		}
+
+		args = append(args, value)
+	}
+
+	// Generate $1, $2, $3, etc. for every argument.
 	placeholders := make([]string, len(args))
-	for i := range args {
-		placeholders[i] = fmt.Sprintf("$%d", i+1)
+
+	for index := range args {
+		placeholders[index] = fmt.Sprintf("$%d", index+1)
 	}
 
 	query := fmt.Sprintf(
@@ -181,60 +352,92 @@ func (db *SupabaseDB) buildInsertTaskQuery(task *domain.Task) (string, []any) {
 		strings.Join(placeholders, ", "),
 	)
 
-	return query, args
+	return query, args, nil
 }
 
-// QueryAllTasks queries all tasks from the database.
-func (db *SupabaseDB) QueryAllTasks(rootCtx context.Context) ([]domain.Task, error) {
-	ctx, cancel := context.WithTimeout(rootCtx, 5*time.Second)
+/*
+QueryAllTasks queries all tasks from the database.
+
+The SELECT column list and scan order are both derived from TasksSchema.
+Because pgx scans values positionally, keeping these orders identical is
+important.
+*/
+func (db *SupabaseDB) QueryAllTasks(
+	rootCtx context.Context,
+) ([]domain.Task, error) {
+	ctx, cancel := context.WithTimeout(
+		rootCtx,
+		databaseOperationTimeout,
+	)
 	defer cancel()
 
-	// Build dynamic SELECT statement from AllFields
-	columnNames := make([]string, 0, len(domain.AllFields))
-	for _, field := range domain.AllFields {
-		columnNames = append(columnNames, string(field.ID))
-	}
+	columns := schemaColumns()
 
-	query := fmt.Sprintf("SELECT uuid, created_at, completed_at, %s FROM tasks ORDER BY completed_at ASC", strings.Join(columnNames, ", "))
+	// completed_at is the third column in TasksSchema.
+	orderColumn := quoteIdentifier(
+		domain.TasksSchema.Columns[2].Name,
+	)
+
+	query := fmt.Sprintf(
+		`SELECT %s
+		 FROM "tasks"
+		 ORDER BY %s ASC`,
+		strings.Join(columns, ", "),
+		orderColumn,
+	)
 
 	rows, err := db.Pool.Query(ctx, query)
 	if err != nil {
-		return nil, fmt.Errorf("Failed to query all tasks: %w", err)
+		return nil, fmt.Errorf(
+			"Failed to query all tasks: %w",
+			err,
+		)
 	}
 	defer rows.Close()
 
-	var tasks []domain.Task
+	tasks := make([]domain.Task, 0)
 
 	for rows.Next() {
 		var task domain.Task
 
-		// Create scan args: UUID, CreatedAt, then one for each field
-		scanArgs := make([]any, len(domain.AllFields)+3)
+		// Create one scan destination for each schema column.
+		scanArgs := make([]any, len(domain.TasksSchema.Columns))
+
+		// Scan the three metadata columns into their strongly typed fields.
 		scanArgs[0] = &task.Metadata.UUID
 		scanArgs[1] = &task.Metadata.CreatedAt
 		scanArgs[2] = &task.Metadata.CompletedAt
 
-		values := make([]any, len(domain.AllFields))
-		for i := range domain.AllFields {
-			scanArgs[i+3] = &values[i]
+		// Scan dynamic task-input columns into temporary values.
+		inputValues := make([]any, len(inputSchemaColumns()))
+
+		for index := range inputValues {
+			scanArgs[index+metadataColumnCount] = &inputValues[index]
 		}
 
 		if err := rows.Scan(scanArgs...); err != nil {
-			return nil, fmt.Errorf("Failed to scan task: %w", err)
+			return nil, fmt.Errorf(
+				"Failed to scan task: %w",
+				err,
+			)
 		}
 
-		// Populate InputData map dynamically from AllFields
-		inputData := domain.TaskInputData{}
-		for i, field := range domain.AllFields {
-			inputData[field.ID] = values[i]
+		// Rebuild Task.InputData using the schema column names.
+		inputData := make(domain.TaskInputData, len(inputValues))
+
+		for index, column := range inputSchemaColumns() {
+			inputData[column.Name] = inputValues[index]
 		}
+
 		task.InputData = &inputData
-
 		tasks = append(tasks, task)
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("Error iterating rows: %w", err)
+		return nil, fmt.Errorf(
+			"Error iterating tasks: %w",
+			err,
+		)
 	}
 
 	if len(tasks) == 0 {
@@ -244,22 +447,44 @@ func (db *SupabaseDB) QueryAllTasks(rootCtx context.Context) ([]domain.Task, err
 	return tasks, nil
 }
 
-// DeleteTask deletes a task from the database.
-func (db *SupabaseDB) DeleteTask(rootCtx context.Context, id domain.ID) error {
+/*
+DeleteTask deletes a task from the database using its UUID.
+*/
+func (db *SupabaseDB) DeleteTask(
+	rootCtx context.Context,
+	id domain.ID,
+) error {
+	ctx, cancel := context.WithTimeout(
+		rootCtx,
+		databaseOperationTimeout,
+	)
+	defer cancel()
+
 	if len(id) != domain.IDLen {
-		return fmt.Errorf("Invalid task ID; Task ID must be 5 characters")
+		return fmt.Errorf(
+			"Invalid task ID: task ID must be %d characters",
+			domain.IDLen,
+		)
 	}
 
-	cmd, err := db.Pool.Exec(rootCtx, "DELETE FROM tasks WHERE uuid = $1", id)
-
-	if cmd.RowsAffected() == 0 {
-		return fmt.Errorf("Task %q does not exist", id)
-	}
-
+	cmdTag, err := db.Pool.Exec(
+		ctx,
+		`DELETE FROM "tasks" WHERE "uuid" = $1`,
+		id,
+	)
 	if err != nil {
-		return fmt.Errorf("Failed to delete task: %w", err)
+		return fmt.Errorf(
+			"Failed to delete task: %w",
+			err,
+		)
 	}
+
+	if cmdTag.RowsAffected() == 0 {
+		return fmt.Errorf(
+			"Task %q does not exist",
+			id,
+		)
+	}
+
 	return nil
 }
-
-// ---------------
