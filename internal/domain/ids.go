@@ -11,8 +11,8 @@ identified type for fields.
 */
 type ID string
 
-// IDLen is the length of generated UUIDs.
-var IDLen = 5
+// TaskIDLen is the length of generated UUIDs.
+var TaskIDLen = 5
 
 /*
 String is the method for casting an ID to

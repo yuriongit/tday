@@ -10,7 +10,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/yuriongit/tday/internal/domain"
-	"github.com/yuriongit/tday/internal/task"
+	"github.com/yuriongit/tday/internal/tasks"
 )
 
 // newCmd represents the new command.
@@ -27,7 +27,7 @@ var rmCmd = &cobra.Command{
 
 		id := domain.ID(args[0])
 
-		return task.Remove(
+		return tasks.Remove(
 			app.Ctx,
 			id,
 			app.Database,

@@ -48,7 +48,7 @@ func outputAllTasks(tasks []domain.Task) {
 		"%d total / %d remaining / %d complete\n",
 		tasksAmt,
 		tasksAmt,
-		0, // TBD: When tasks can be marked as complete
+		0, // TODO: When tasks can be marked as complete
 	)
 	fmt.Println("—————————————————————————————————————")
 

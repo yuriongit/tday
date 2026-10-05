@@ -1,9 +1,9 @@
 /*
-Package task offers the CRUD functionality for
+Package tasks offers the CRUD functionality for
 tasks, currently offers the functionality to
 create and read all tasks.
 */
-package task
+package tasks
 
 import (
 	"context"
