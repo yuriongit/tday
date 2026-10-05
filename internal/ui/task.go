@@ -13,6 +13,7 @@ import (
 type Task struct {
 	New    func(id *domain.ID)
 	All    func(t []domain.Task)
+	Update func(id domain.ID)
 	Remove func(id domain.ID)
 }
 
@@ -23,6 +24,7 @@ related output (besides input collection).
 var TaskOutput = Task{
 	New:    outputNewTask,
 	All:    outputAllTasks,
+	Update: outputUpdatedTask,
 	Remove: outputDeletedTask,
 }
 
@@ -83,4 +85,8 @@ metadata in a formatted manner.
 */
 func outputDeletedTask(id domain.ID) {
 	fmt.Printf("✓ Task %q deleted successfully.\n", id)
+}
+
+func outputUpdatedTask(id domain.ID) {
+	fmt.Printf("✓ Task %q updated successfully.\n", id)
 }
