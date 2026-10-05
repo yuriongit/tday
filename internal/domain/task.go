@@ -52,7 +52,7 @@ type FieldDefinition struct {
 	Name     string
 	Type     string
 	Required bool
-	Validate func(string) error
+	Validate func(string, bool) error
 }
 
 /*
@@ -128,40 +128,56 @@ func GetFieldDef(id TaskFieldType) *FieldDefinition {
 	return nil
 }
 
-func validateLabel(s string) error {
-	if len(s) == 0 {
-		return fmt.Errorf("Label cannot be empty")
-	}
-	if len(s) > 50 {
-		return fmt.Errorf("Label cannot exceed 50 characters")
-	}
-	return nil
-}
-
-func validateTitle(s string) error {
-	if len(s) == 0 {
-		return fmt.Errorf("Title cannot be empty")
+func validateLabel(s string, update bool) error {
+	switch update {
+	case false:
+		return nil
+	case true:
+		if len(s) == 0 {
+			return fmt.Errorf("Label cannot be empty")
+		}
+		if len(s) > 50 {
+			return fmt.Errorf("Label cannot exceed 50 characters")
+		}
 	}
 	return nil
 }
 
-func validateDescription(s string) error {
-	if len(s) > 500 {
-		return fmt.Errorf("Description cannot exceed 500 characters")
+func validateTitle(s string, update bool) error {
+	switch update {
+	case false:
+		return nil
+	case true:
+		if len(s) == 0 {
+			return fmt.Errorf("Title cannot be empty")
+		}
 	}
 	return nil
 }
 
-func validateDueAt(s string) error {
-	for _, layout := range TimeLayouts {
-		if _, err := time.Parse(layout, s); err == nil {
-			return nil
+func validateDescription(s string, update bool) error {
+	switch update {
+	case false:
+		return nil
+	case true:
+		if len(s) > 500 {
+			return fmt.Errorf("Description cannot exceed 500 characters")
+		}
+	}
+	return nil
+}
+
+func validateDueAt(s string, update bool) error {
+	switch update {
+	case false:
+		return nil
+	case true:
+		for _, layout := range TimeLayouts {
+			if _, err := time.Parse(layout, s); err == nil {
+				return nil
+			}
 		}
 	}
 
-	return fmt.Errorf(
-		"Invalid format. Examples: '%s' and '%s'",
-		TimeLayouts[0],
-		TimeLayouts[1],
-	)
+	return nil
 }

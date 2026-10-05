@@ -29,9 +29,9 @@ func collectTaskInputs(
 	for _, fieldDef := range domain.AllFields {
 		for {
 			if !fieldDef.Required {
-				fmt.Printf("? %s (opt.):\n  > ", fieldDef.Name)
+				fmt.Printf("?. %s (opt.):\n  > ", fieldDef.Name)
 			} else {
-				fmt.Printf("? %s:\n  > ", fieldDef.Name)
+				fmt.Printf("?. %s:\n  > ", fieldDef.Name)
 			}
 
 			if !scanner.Scan() {
@@ -41,7 +41,7 @@ func collectTaskInputs(
 			value := scanner.Text()
 
 			// Validate using the field's validation function
-			if err := fieldDef.Validate(value); err != nil {
+			if err := fieldDef.Validate(value, false); err != nil {
 				fmt.Printf("✗ %s\n", err.Error())
 				// retry logic here
 				continue
@@ -51,5 +51,6 @@ func collectTaskInputs(
 			break
 		}
 	}
+
 	return input
 }

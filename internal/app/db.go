@@ -38,14 +38,14 @@ type Database interface {
 
 	// CRUD methods.
 	InsertTask(rootCtx context.Context, task *domain.Task) error
+	QueryTask(rootCtx context.Context, id domain.ID) (*domain.Task, error)
 	QueryAllTasks(rootCtx context.Context) ([]domain.Task, error)
+	UpdateTask(rootCtx context.Context, updatedTaskFields *domain.TaskInputData, id domain.ID) error
 	DeleteTask(rootCtx context.Context, id domain.ID) error
 
 	// Remaining CRUD methods.
 	/*
-		QueryTask()
 		DeleteSetOfTask()
-		UpdateTask()
 		CompleteTask()
 	*/
 }
@@ -355,6 +355,87 @@ func buildInsertTaskQuery(task *domain.Task) (string, []any, error) {
 	return query, args, nil
 }
 
+// QueryTask queries a tasks from the database.
+func (db *SupabaseDB) QueryTask(
+	rootCtx context.Context,
+	id domain.ID,
+) (*domain.Task, error) {
+	ctx, cancel := context.WithTimeout(
+		rootCtx,
+		databaseOperationTimeout,
+	)
+	defer cancel()
+
+	columns := schemaColumns()
+
+	query := fmt.Sprintf(
+		`SELECT %s
+		 FROM "tasks"
+		 WHERE uuid = $1`,
+		strings.Join(columns, ", "),
+	)
+
+	rows, err := db.Pool.Query(ctx, query, id)
+	if err != nil {
+		return nil, fmt.Errorf(
+			"Failed to query task: %w",
+			err,
+		)
+	}
+	defer rows.Close()
+
+	tasks := make([]domain.Task, 0)
+
+	for rows.Next() {
+		var task domain.Task
+
+		// Create one scan destination for each schema column.
+		scanArgs := make([]any, len(domain.TasksSchema.Columns))
+
+		// Scan the three metadata columns into their strongly typed fields.
+		scanArgs[0] = &task.Metadata.UUID
+		scanArgs[1] = &task.Metadata.CreatedAt
+		scanArgs[2] = &task.Metadata.CompletedAt
+
+		// Scan dynamic task-input columns into temporary values.
+		inputValues := make([]any, len(inputSchemaColumns()))
+
+		for index := range inputValues {
+			scanArgs[index+metadataColumnCount] = &inputValues[index]
+		}
+
+		if err := rows.Scan(scanArgs...); err != nil {
+			return nil, fmt.Errorf(
+				"Failed to scan task: %w",
+				err,
+			)
+		}
+
+		// Rebuild Task.InputData using the schema column names.
+		inputData := make(domain.TaskInputData, len(inputValues))
+
+		for index, column := range inputSchemaColumns() {
+			inputData[column.Name] = inputValues[index]
+		}
+
+		task.InputData = &inputData
+		tasks = append(tasks, task)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf(
+			"Error iterating tasks: %w",
+			err,
+		)
+	}
+
+	if len(tasks) == 0 {
+		return nil, fmt.Errorf("No task found with UUID: %s", id)
+	}
+
+	return &tasks[0], nil
+}
+
 /*
 QueryAllTasks queries all tasks from the database.
 
@@ -484,6 +565,79 @@ func (db *SupabaseDB) DeleteTask(
 			"Task %q does not exist",
 			id,
 		)
+	}
+
+	return nil
+}
+
+/*
+buildUpdateTaskQuery dynamically constructs the UPDATE statement and argument slice.
+
+The column identifiers are safely quoted, and values are passed sequentially
+as $2, $3, etc. Parameter $1 is always reserved for the task UUID in the WHERE clause.
+*/
+func buildUpdateTaskQuery(
+	updatedTaskFields *domain.TaskInputData,
+	id domain.ID,
+) (string, []any, error) {
+	if updatedTaskFields == nil || len(*updatedTaskFields) == 0 {
+		return "", nil, fmt.Errorf("no fields provided to update")
+	}
+
+	setClauses := make([]string, 0, len(*updatedTaskFields))
+	args := make([]any, 0, len(*updatedTaskFields)+1)
+
+	// $1 is reserved for the task ID in the WHERE clause.
+	args = append(args, id)
+
+	paramIdx := 2
+	for key, val := range *updatedTaskFields {
+		setClauses = append(
+			setClauses,
+			fmt.Sprintf("%s = $%d", quoteIdentifier(key), paramIdx),
+		)
+		args = append(args, val)
+		paramIdx++
+	}
+
+	query := fmt.Sprintf(
+		`UPDATE "tasks" SET %s WHERE "uuid" = $1`,
+		strings.Join(setClauses, ", "),
+	)
+
+	return query, args, nil
+}
+
+/*
+UpdateTask modifies an existing task in the database using its UUID.
+
+It utilizes buildUpdateTaskQuery to construct the dynamic SQL statement
+and parameters, executes the update within a timeout context, and verifies
+that the target task exists.
+*/
+func (db *SupabaseDB) UpdateTask(
+	rootCtx context.Context,
+	updatedTaskFields *domain.TaskInputData,
+	id domain.ID,
+) error {
+	ctx, cancel := context.WithTimeout(
+		rootCtx,
+		databaseOperationTimeout,
+	)
+	defer cancel()
+
+	query, args, err := buildUpdateTaskQuery(updatedTaskFields, id)
+	if err != nil {
+		return err
+	}
+
+	cmdTag, err := db.Pool.Exec(ctx, query, args...)
+	if err != nil {
+		return fmt.Errorf("Failed to update task: %w", err)
+	}
+
+	if cmdTag.RowsAffected() == 0 {
+		return fmt.Errorf("Task %q does not exist", id)
 	}
 
 	return nil
