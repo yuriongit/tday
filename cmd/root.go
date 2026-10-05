@@ -51,16 +51,16 @@ To get started, run:
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
+	// Global cleanup
+	if globalApp != nil {
+		defer globalApp.Cancel()
+		defer globalApp.Database.Pool.Close()
+	}
+
 	err := rootCmd.Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "✗ %s\n", err.Error())
 		return
-	}
-
-	// Global cleanup
-	if globalApp != nil {
-		globalApp.Cancel()
-		globalApp.Database.Pool.Close()
 	}
 }
 

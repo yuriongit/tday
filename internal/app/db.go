@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 	"github.com/yuriongit/tday/internal/config"
@@ -84,6 +85,14 @@ func (db *SupabaseDB) newPool(tempCtx context.Context) error {
 	if err != nil {
 		return fmt.Errorf("Configuration Error: %w", err)
 	}
+
+	// Use simple protocol instead of statement caching (CLI-friendly)
+	config.ConnConfig.DefaultQueryExecMode = pgx.QueryExecModeSimpleProtocol
+
+	// Aggressive cleanup for CLI tool with short-lived connections
+	config.MaxConns = 5
+	config.MinConns = 0
+	config.MaxConnIdleTime = 10 * time.Second
 
 	ctx, cancel := context.WithTimeout(tempCtx, 5*time.Second)
 	defer cancel()
