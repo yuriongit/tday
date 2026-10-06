@@ -662,7 +662,7 @@ func buildCompleteTaskQuery(id domain.ID) (string, []any) {
 /*
 CompleteTask modifies an existing task in the database by setting its completion timestamp.
 
-It utilizes buildCompleteTaskQuery to construct the SQL statement, executes the update within a timeout context, and 
+It utilizes buildCompleteTaskQuery to construct the SQL statement, executes the update within a timeout context, and
 verifies that the target task exists.
 */
 func (db *SupabaseDB) CompleteTask(

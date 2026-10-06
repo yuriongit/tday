@@ -11,11 +11,11 @@ import (
 
 // Task defines the structure for task output functions.
 type Task struct {
-	New    func(id *domain.ID)
-	All    func(t []domain.Task)
-	Update func(id domain.ID)
+	New      func(id *domain.ID)
+	All      func(t []domain.Task)
+	Update   func(id domain.ID)
 	Complete func(id domain.ID)
-	Remove func(id domain.ID)
+	Remove   func(id domain.ID)
 }
 
 /*
@@ -23,11 +23,11 @@ TaskOutput holds the functions responsible for any task-
 related output (besides input collection).
 */
 var TaskOutput = Task{
-	New:    outputNewTask,
-	All:    outputAllTasks,
-	Update: outputUpdatedTask,
+	New:      outputNewTask,
+	All:      outputAllTasks,
+	Update:   outputUpdatedTask,
 	Complete: outputCompleteTask,
-	Remove: outputDeletedTask,
+	Remove:   outputDeletedTask,
 }
 
 /*
@@ -94,5 +94,5 @@ func outputUpdatedTask(id domain.ID) {
 }
 
 func outputCompleteTask(id domain.ID) {
-  fmt.Printf("✓ Task %q successfully marked as complete\n", id)
+	fmt.Printf("✓ Task %q successfully marked as complete\n", id)
 }

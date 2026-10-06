@@ -13,11 +13,11 @@ func MarkDone(
 	id domain.ID,
 	db *app.SupabaseDB,
 ) error {
-  if err := db.CompleteTask(rootCtx, id); err != nil {
-  	return err
-  }
+	if err := db.CompleteTask(rootCtx, id); err != nil {
+		return err
+	}
 
-  ui.TaskOutput.Complete(id)
-  
+	ui.TaskOutput.Complete(id)
+
 	return nil
 }
