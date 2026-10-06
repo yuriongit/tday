@@ -1,6 +1,7 @@
 /*
-Copyright © 2026 NAME HERE <EMAIL ADDRESS>
+Package cmd holds all of TDay's commands.
 
+Copyright © 2026 Yuri Okeren <yuri.dev44@outlook.com>
 */
 package cmd
 
@@ -8,33 +9,32 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"github.com/yuriongit/tday/internal/domain"
+	"github.com/yuriongit/tday/internal/tasks"
 )
 
-// doneCmd represents the done command
+// doneCmd represents the done command.
 var doneCmd = &cobra.Command{
 	Use:   "done",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Marks a task as complete",
+	Long:  `TODO: Implement later`,
+	RunE: func(_ *cobra.Command, args []string) error {
+		app := GetApp()
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("done called")
+		if len(args) == 0 {
+			return fmt.Errorf("No task ID provided")
+		}
+
+		id := domain.ID(args[0])
+
+		return tasks.MarkDone(
+			app.Ctx,
+			id,
+			app.Database,
+		)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(doneCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// doneCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// doneCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
