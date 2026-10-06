@@ -8,6 +8,10 @@ import (
 	"github.com/yuriongit/tday/internal/ui"
 )
 
+/* 
+MarkDone attempts to mark a task as complete and 
+outputs the status of the operation.
+ */
 func MarkDone(
 	rootCtx context.Context,
 	id domain.ID,
