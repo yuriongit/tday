@@ -52,7 +52,7 @@ type FieldDefinition struct {
 	Name     string
 	Type     string
 	Required bool
-	Validate func(string, bool) error
+	Validate func(value string, isUpdate bool) error
 }
 
 /*
@@ -128,56 +128,55 @@ func GetFieldDef(id TaskFieldType) *FieldDefinition {
 	return nil
 }
 
-func validateLabel(s string, update bool) error {
-	switch update {
-	case false:
+func validateLabel(value string, update bool) error {
+	if update && value == "" {
 		return nil
-	case true:
-		if len(s) == 0 {
-			return fmt.Errorf("Label cannot be empty")
-		}
-		if len(s) > 50 {
-			return fmt.Errorf("Label cannot exceed 50 characters")
-		}
+	}
+	if value == "" {
+		return fmt.Errorf("Label cannot be empty")
+	}
+	if len(value) > 10 {
+		return fmt.Errorf("Label cannot exceed 10 characters")
 	}
 	return nil
 }
 
-func validateTitle(s string, update bool) error {
-	switch update {
-	case false:
+func validateTitle(value string, update bool) error {
+	if update && value == "" {
 		return nil
-	case true:
-		if len(s) == 0 {
-			return fmt.Errorf("Title cannot be empty")
-		}
+	}
+	if value == "" {
+		return fmt.Errorf("Title cannot be empty")
+	}
+	if len(value) > 100 {
+		return fmt.Errorf("Title cannot exceed 100 characters")
 	}
 	return nil
 }
 
-func validateDescription(s string, update bool) error {
-	switch update {
-	case false:
+func validateDescription(value string, update bool) error {
+	if update && value == "" {
 		return nil
-	case true:
-		if len(s) > 500 {
-			return fmt.Errorf("Description cannot exceed 500 characters")
-		}
+	}
+	if len(value) > 500 {
+		return fmt.Errorf("Description cannot exceed 500 characters")
 	}
 	return nil
 }
 
-func validateDueAt(s string, update bool) error {
-	switch update {
-	case false:
+func validateDueAt(value string, update bool) error {
+	if update && value == "" {
 		return nil
-	case true:
-		for _, layout := range TimeLayouts {
-			if _, err := time.Parse(layout, s); err == nil {
-				return nil
-			}
+	}
+	if value == "" {
+		return fmt.Errorf("Due at cannot be empty")
+	}
+
+	for _, layout := range TimeLayouts {
+		if _, err := time.Parse(layout, value); err == nil {
+			return nil
 		}
 	}
 
-	return nil
+	return fmt.Errorf("Invalid format (e.g. %q or %q)", TimeLayouts[0], TimeLayouts[1])
 }
