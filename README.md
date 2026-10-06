@@ -1,22 +1,29 @@
 # TDay
 
-A personal task-managing command-line tool for keep tracking of what I need done
-for the day.
+TDay, pronounced as _"**Today**"_, is a simple and straight-forward command-line
+tool for task management.
+
+_TDay was built for my personal use for keep tracking of what I need done for
+the day._
 
 ## Features
 
-1. `tday init` initialize TDay's configuration.
-2. `tday new` create a new task.
-3. `tday list` list all tasks.
+1. Initializes the global configuration directory `~/.tday` with a prepared .env
+   file
+2. Interactive task creation
+3. Interactive task updates
+4. Task completion
+5. Task retrieval (all tasks)
+6. Task deletion
+7. Structured output
 
 ## Configuration
 
-TDay has a configuration directory (`/.tday`.) within the home directory.
-For example, environment variables that TDay relies on are stored in the
-configuration directory. This specifically allows TDay to be used globally within
-the terminal.
+TDay's configuration directory, `~/.tday`, holds environment variables that TDay
+relies on are stored in the configuration directory. This specifically allows
+enables global usage.
 
-- TDay's Configuration: [/docs/tday-config.md](./docs/tday-config.md.md)
+- `~/.tday` directory layout document (coming soon): [/docs/tday.md](./docs/tday.md)
 
 ## Infrastructure
 
@@ -24,7 +31,7 @@ the terminal.
 | ------- | --------------------- |
 | Main    | Go, Cobra             |
 | Tooling | golangci-lint, Go     |
-| Data    | PostgreSQL (Supabase) |
+| UI      | PostgreSQL (Supabase) |
 
 ## Requirements
 
@@ -44,35 +51,26 @@ go install
 Start:
 
 ```bash
-tday --help
+tday help
 ```
 
-Init TDay:
+Init TDay and create a task:
 
 ```bash
 tday init
-```
-
-Create a task:
-
-```bash
 tday new
 ```
 
-List all tasks:
+## Images
 
-```bash
-tday ls
-```
+To see a preview of TDay, view the [/docs/preview.md](./docs/preview.md) document.
+
+_Images directory - [/.github/images](./github/images)_
 
 ## Docs
 
 - [/docs/architecture.md](./docs/architecture.md)
 - [/docs/planned.md](./docs/planned.md)
-
-## Images
-
-- [/.github/images/](/.github/images)
 
 ## License
 
