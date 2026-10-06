@@ -14,6 +14,7 @@ type Task struct {
 	New    func(id *domain.ID)
 	All    func(t []domain.Task)
 	Update func(id domain.ID)
+	Complete func(id domain.ID)
 	Remove func(id domain.ID)
 }
 
@@ -25,6 +26,7 @@ var TaskOutput = Task{
 	New:    outputNewTask,
 	All:    outputAllTasks,
 	Update: outputUpdatedTask,
+	Complete: outputCompleteTask,
 	Remove: outputDeletedTask,
 }
 
@@ -89,4 +91,8 @@ func outputDeletedTask(id domain.ID) {
 
 func outputUpdatedTask(id domain.ID) {
 	fmt.Printf("✓ Task %q updated successfully.\n", id)
+}
+
+func outputCompleteTask(id domain.ID) {
+  fmt.Printf("✓ Task %q successfully marked as complete\n", id)
 }
