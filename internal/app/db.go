@@ -642,3 +642,49 @@ func (db *SupabaseDB) UpdateTask(
 
 	return nil
 }
+
+/*
+buildCompleteTaskQuery constructs the UPDATE statement and argument slice for completing a task.
+
+It sets the completed_at timestamp to the current time, reserving $1 for the task UUID in the WHERE clause.
+*/
+func buildCompleteTaskQuery(id domain.ID) (string, []any) {
+	args := []any{id, time.Now()}
+
+	query := fmt.Sprintf(
+		`UPDATE "tasks" SET %s = $2 WHERE "uuid" = $1`,
+		quoteIdentifier("completed_at"),
+	)
+
+	return query, args
+}
+
+/*
+CompleteTask modifies an existing task in the database by setting its completion timestamp.
+
+It utilizes buildCompleteTaskQuery to construct the SQL statement, executes the update within a timeout context, and
+verifies that the target task exists.
+*/
+func (db *SupabaseDB) CompleteTask(
+	rootCtx context.Context,
+	id domain.ID,
+) error {
+	ctx, cancel := context.WithTimeout(
+		rootCtx,
+		databaseOperationTimeout,
+	)
+	defer cancel()
+
+	query, args := buildCompleteTaskQuery(id)
+
+	cmdTag, err := db.Pool.Exec(ctx, query, args...)
+	if err != nil {
+		return fmt.Errorf("Failed to mark task as complete: %w", err)
+	}
+
+	if cmdTag.RowsAffected() == 0 {
+		return fmt.Errorf("Task %q does not exist", id)
+	}
+
+	return nil
+}
