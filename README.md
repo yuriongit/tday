@@ -1,6 +1,6 @@
 # TDay
 
-TDay, pronounced as _"**Today**"_, is a simple and striaghtforward command-line
+TDay, pronounced as _"**Today**"_, is a simple and straight-forward command-line
 tool for task management.
 
 _TDay was built for my personal use for keep tracking of what I need done for
