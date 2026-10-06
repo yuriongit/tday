@@ -1,6 +1,6 @@
 /*
-Package initializer is for initializing TDay's
- This package prepares the needed
+Package cnf is for initializing TDay's
+This package prepares the needed
 environment variables for the application to
 use. Also, this package directly enables global
 usage of TDay.

@@ -1,5 +1,5 @@
 /*
-Package config provides helpers for working
+Package cnf provides helpers for working
 with TDay's configuration directory.
 */
 package cnf
