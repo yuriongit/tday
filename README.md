@@ -13,8 +13,9 @@ the day._
 2. Interactive task creation
 3. Interactive task updates
 4. Task completion
-5. Task deletion
-6. Structured output
+5. Task retrieval (all tasks)
+6. Task deletion
+7. Structured output
 
 ## Configuration
 
