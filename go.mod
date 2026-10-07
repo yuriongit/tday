@@ -6,10 +6,10 @@ require (
 	github.com/jackc/pgx/v5 v5.11.0 // direct
 	github.com/joho/godotenv v1.5.1 // direct
 	github.com/spf13/cobra v1.10.2 // direct
+	charm.land/lipgloss/v2 v2.0.6 // direct
 )
 
 require (
-	charm.land/lipgloss/v2 v2.0.6 // indirect
 	github.com/charmbracelet/colorprofile v0.4.3 // indirect
 	github.com/charmbracelet/ultraviolet v0.0.0-20260811164956-006e29f97886 // indirect
 	github.com/charmbracelet/x/ansi v0.11.8 // indirect
