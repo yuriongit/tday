@@ -14,7 +14,7 @@ func Remove(rootCtx context.Context, id domain.ID, db *app.SupabaseDB) error {
 		return err
 	}
 
-	ui.TaskOutput.Remove(id)
+	ui.ColoredTaskOutput.Remove(id)
 
 	return nil
 }

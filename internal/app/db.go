@@ -16,6 +16,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/yuriongit/tday/internal/cnf"
 	"github.com/yuriongit/tday/internal/domain"
+	"github.com/yuriongit/tday/internal/ui"
 )
 
 const (
@@ -562,8 +563,8 @@ func (db *SupabaseDB) DeleteTask(
 
 	if cmdTag.RowsAffected() == 0 {
 		return fmt.Errorf(
-			"Task %q does not exist",
-			id,
+			"Task %s does not exist",
+			fmt.Sprintf("%q", ui.IDStyle.Render(id.String())),
 		)
 	}
 
@@ -637,7 +638,7 @@ func (db *SupabaseDB) UpdateTask(
 	}
 
 	if cmdTag.RowsAffected() == 0 {
-		return fmt.Errorf("Task %q does not exist", id)
+		return fmt.Errorf("Task %s does not exist", ui.IDStyle.Render(id.String()))
 	}
 
 	return nil
@@ -683,7 +684,7 @@ func (db *SupabaseDB) CompleteTask(
 	}
 
 	if cmdTag.RowsAffected() == 0 {
-		return fmt.Errorf("Task %q does not exist", id)
+		return fmt.Errorf("Task %s does not exist", fmt.Sprintf("%q", fmt.Sprintf("%q", ui.IDStyle.Render(id.String()))))
 	}
 
 	return nil

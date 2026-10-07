@@ -9,50 +9,30 @@ import (
 	"github.com/yuriongit/tday/internal/domain"
 )
 
-// Task defines the structure for task output functions.
-type Task struct {
-	New      func(id *domain.ID)
-	All      func(t []domain.Task)
-	Update   func(id domain.ID)
-	Complete func(id domain.ID)
-	Remove   func(id domain.ID)
-}
-
 /*
-TaskOutput holds the functions responsible for any task-
-related output (besides input collection).
-*/
-var TaskOutput = Task{
-	New:      outputNewTask,
-	All:      outputAllTasks,
-	Update:   outputUpdatedTask,
-	Complete: outputCompleteTask,
-	Remove:   outputDeletedTask,
-}
-
-/*
-outputNewTask outputs the created task and it's
+outputNewTask outputs the created task and its
 metadata in a formatted manner.
 */
-func outputNewTask(id *domain.ID) {
-	fmt.Println("———————————————————————————————————")
-	fmt.Printf("✓ Task %q created successfully.\n", id)
+func coloredOutputNewTask(id *domain.ID) {
+  fmt.Println(Divider)
+	// Only the ">>" arrows are styled in green; remainder of the text is unstyled
+	fmt.Printf("%s Task %s created successfully.\n", GreenArrows, IDStyle.Render(id.String()))
 }
 
 /*
 outputAllTasks outputs all the persisted tasks in
 a formatted manner.
 */
-func outputAllTasks(tasks []domain.Task) {
+func coloredOutputAllTasks(tasks []domain.Task) {
 	tasksAmt := len(tasks)
 
 	fmt.Printf(
-		"%d total / %d remaining / %d complete\n",
-		tasksAmt,
-		tasksAmt,
-		0, // TODO: When tasks can be marked as complete
+		"%s total / %s remaining / %s complete\n",
+		BoldNum.Render(fmt.Sprintf("%d", tasksAmt)),
+		DueStyle.Render(fmt.Sprintf("%d", tasksAmt)),
+		DoneStyle.Render("0"), // TODO: When tasks can be marked as complete
 	)
-	fmt.Println("—————————————————————————————————————")
+	fmt.Println(Divider)
 
 	for idx, task := range tasks {
 		label := (*task.InputData)[string(domain.LabelField)]
@@ -63,16 +43,31 @@ func outputAllTasks(tasks []domain.Task) {
 		createdAt := task.Metadata.CreatedAt.Format(domain.TimeLayouts[1])
 		uuid := task.Metadata.UUID
 
-		fmt.Printf("{%s} %s: %q\n", uuid, label, title)
+		fmt.Printf(
+			"%s %s: %s\n",
+			UUIDStyle.Render(fmt.Sprintf("{%s}", uuid)),
+			LabelStyle.Render(label.(string)),
+			TitleStyle.Render(fmt.Sprintf("%q", title)),
+		)
 
 		if desc != "" {
-			fmt.Printf("  > Desc: %q\n", desc)
+			fmt.Printf("  %s Desc: %s\n", MutedStyle.Render(">"), DescStyle.Render(fmt.Sprintf("%q", desc)))
 		}
 
 		if !completedAt.IsZero() {
-			fmt.Printf("  > Completed at: %s (Created at: %s)\n", completedAt.Format(domain.TimeLayouts[1]), createdAt)
+			fmt.Printf(
+				"  %s Completed at: %s (%s)\n",
+				MutedStyle.Render(">"),
+				DoneStyle.Render(completedAt.Format(domain.TimeLayouts[1])),
+				MutedStyle.Render("Created at: "+createdAt),
+			)
 		} else {
-			fmt.Printf("  > Due at: %s (Created at: %s)\n", dueAt, createdAt)
+			fmt.Printf(
+				"  %s Due at: %s (%s)\n",
+				MutedStyle.Render(">"),
+				DueStyle.Render(dueAt.(string)),
+				MutedStyle.Render("Created at: "+createdAt),
+			)
 		}
 
 		if idx != tasksAmt-1 {
@@ -82,17 +77,18 @@ func outputAllTasks(tasks []domain.Task) {
 }
 
 /*
-outputDeletedTask outputs the created task and it's
-metadata in a formatted manner.
+outputDeletedTask outputs the deleted task state with
+git-style "<<" prefix and the entire message rendered red.
 */
-func outputDeletedTask(id domain.ID) {
-	fmt.Printf("✓ Task %q deleted successfully.\n", id)
+func coloredOutputDeletedTask(id domain.ID) {
+	msg := fmt.Sprintf("%s Task %s deleted successfully.", GreenCheckmark, fmt.Sprintf("%q", IDStyle.Render(id.String())))
+	fmt.Println(RedOutput.Render(msg))
 }
 
-func outputUpdatedTask(id domain.ID) {
-	fmt.Printf("✓ Task %q updated successfully.\n", id)
+func coloredOutputUpdatedTask(id domain.ID) {
+  fmt.Printf("%s Task %s updated successfully.\n", YellowArrows, fmt.Sprintf("%q", IDStyle.Render(id.String())))
 }
 
-func outputCompleteTask(id domain.ID) {
-	fmt.Printf("✓ Task %q successfully marked as complete\n", id)
+func coloredOutputCompleteTask(id domain.ID) {
+	fmt.Printf("%s Task %s successfully marked as complete\n", GreenCheckmark, fmt.Sprintf("%q", IDStyle.Render(id.String())))
 }
