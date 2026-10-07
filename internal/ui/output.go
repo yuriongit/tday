@@ -23,3 +23,15 @@ var NonColoredTaskOutput = TaskOutput{
 	// TODO: Add AllCompleted
 	Remove:   noColorOutputDeletedTask,
 }
+
+/*
+ColoredTaskOutput holds the functions responsible for any task-
+related output (besides input collection).
+*/
+var ColoredTaskOutput = TaskOutput{
+	New:      coloredOutputNewTask,
+	All:      coloredOutputAllTasks,
+	Update:   coloredOutputUpdatedTask,
+	Complete: coloredOutputCompleteTask,
+	Remove:   coloredOutputDeletedTask,
+}
