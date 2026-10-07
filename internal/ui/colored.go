@@ -10,7 +10,7 @@ import (
 )
 
 /*
-outputNewTask outputs the created task and its
+coloredOutputNewTask outputs the created task and its
 metadata in a formatted manner.
 */
 func coloredOutputNewTask(id *domain.ID) {
@@ -20,7 +20,7 @@ func coloredOutputNewTask(id *domain.ID) {
 }
 
 /*
-outputAllTasks outputs all the persisted tasks in
+coloredOutputAllTasks outputs all the persisted tasks in
 a formatted manner.
 */
 func coloredOutputAllTasks(tasks []domain.Task) {
@@ -77,7 +77,7 @@ func coloredOutputAllTasks(tasks []domain.Task) {
 }
 
 /*
-outputDeletedTask outputs the deleted task state with
+coloredOutputDeletedTask outputs the deleted task state with
 git-style "<<" prefix and the entire message rendered red.
 */
 func coloredOutputDeletedTask(id domain.ID) {

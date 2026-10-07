@@ -1,3 +1,6 @@
+/*
+Package ui provides the UI for TDay.
+*/
 package ui
 
 import "github.com/yuriongit/tday/internal/domain"
@@ -12,16 +15,16 @@ type TaskOutput struct {
 }
 
 /*
-NonColoredTaskOutput holds the functions responsible for any task-
+UncoloredTaskOutput holds the functions responsible for any task-
 related output (besides input collection).
 */
-var NonColoredTaskOutput = TaskOutput{
-	New:      noColorOutputNewTask,
-	All:      noColorOutputAllTasks,
-	Update:   noColorOutputUpdatedTask,
-	Complete: noColorOutputCompleteTask,
+var UncoloredTaskOutput = TaskOutput{
+	New:      uncoloredOutputNewTask,
+	All:      uncoloredOutputAllTasks,
+	Update:   uncoloredOutputUpdatedTask,
+	Complete: uncoloredOutputCompleteTask,
 	// TODO: Add AllCompleted
-	Remove:   noColorOutputDeletedTask,
+	Remove:   uncoloredOutputDeletedTask,
 }
 
 /*

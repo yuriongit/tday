@@ -1,3 +1,6 @@
+/*
+Package ui provides the UI for TDay.
+*/
 package ui
 
 const (

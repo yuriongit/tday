@@ -1,3 +1,6 @@
+/*
+Package ui provides the UI for TDay.
+*/
 package ui
 
 import (
@@ -7,19 +10,19 @@ import (
 )
 
 /*
-outputNewTask outputs the created task and it's
+uncoloredOutputNewTask outputs the created task and it's
 metadata in a formatted manner.
 */
-func noColorOutputNewTask(id *domain.ID) {
+func uncoloredOutputNewTask(id *domain.ID) {
 	fmt.Println("———————————————————————————————————")
 	fmt.Printf("✓ Task %q created successfully.\n", id)
 }
 
 /*
-outputAllTasks outputs all the persisted tasks in
+uncoloredOutputAllTasks outputs all the persisted tasks in
 a formatted manner.
 */
-func noColorOutputAllTasks(tasks []domain.Task) {
+func uncoloredOutputAllTasks(tasks []domain.Task) {
 	tasksAmt := len(tasks)
 
 	fmt.Printf(
@@ -58,17 +61,17 @@ func noColorOutputAllTasks(tasks []domain.Task) {
 }
 
 /*
-outputDeletedTask outputs the created task and it's
+uncoloredOutputDeletedTask outputs the created task and it's
 metadata in a formatted manner.
 */
-func noColorOutputDeletedTask(id domain.ID) {
+func uncoloredOutputDeletedTask(id domain.ID) {
 	fmt.Printf("✓ Task %q deleted successfully.\n", id)
 }
 
-func noColorOutputUpdatedTask(id domain.ID) {
+func uncoloredOutputUpdatedTask(id domain.ID) {
 	fmt.Printf("✓ Task %q updated successfully.\n", id)
 }
 
-func noColorOutputCompleteTask(id domain.ID) {
+func uncoloredOutputCompleteTask(id domain.ID) {
 	fmt.Printf("✓ Task %q successfully marked as complete\n", id)
 }
