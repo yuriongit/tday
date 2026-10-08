@@ -563,8 +563,9 @@ func (db *SupabaseDB) DeleteTask(
 
 	if cmdTag.RowsAffected() == 0 {
 		return fmt.Errorf(
-			"Task %s does not exist",
-			fmt.Sprintf("%q", ui.IDStyle.Render(id.String())),
+			"Task %s %s",
+			ui.IDStyle.Render(id.String()),
+			ui.ErrStyle.Render("does not exist"),
 		)
 	}
 
@@ -638,7 +639,11 @@ func (db *SupabaseDB) UpdateTask(
 	}
 
 	if cmdTag.RowsAffected() == 0 {
-		return fmt.Errorf("Task %s does not exist", ui.IDStyle.Render(id.String()))
+		return fmt.Errorf(
+			"Task %s %s",
+			ui.IDStyle.Render(id.String()),
+			ui.ErrStyle.Render("does not exist"),
+		)
 	}
 
 	return nil
@@ -684,7 +689,11 @@ func (db *SupabaseDB) CompleteTask(
 	}
 
 	if cmdTag.RowsAffected() == 0 {
-		return fmt.Errorf("Task %s does not exist", fmt.Sprintf("%q", fmt.Sprintf("%q", ui.IDStyle.Render(id.String()))))
+  	return fmt.Errorf(
+  		"Task %s %s",
+  		ui.IDStyle.Render(id.String()),
+  		ui.ErrStyle.Render("does not exist"),
+  	)
 	}
 
 	return nil
