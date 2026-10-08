@@ -30,7 +30,7 @@ func MarkDone(
 		return err
 	}
 
-	ui.TaskOutput.Complete(id)
+	ui.ColoredTaskOutput.Complete(id)
 
 	return nil
 }

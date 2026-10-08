@@ -16,6 +16,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/yuriongit/tday/internal/cnf"
 	"github.com/yuriongit/tday/internal/domain"
+	"github.com/yuriongit/tday/internal/ui"
 )
 
 const (
@@ -430,7 +431,11 @@ func (db *SupabaseDB) QueryTask(
 	}
 
 	if len(tasks) == 0 {
-		return nil, fmt.Errorf("No task found with UUID: %s", id)
+		return nil, fmt.Errorf(
+			"Task %s %s",
+			ui.IDStyle.Render(id.String()),
+			ui.ErrStyle.Render("does not exist"),
+		)
 	}
 
 	return &tasks[0], nil
@@ -555,8 +560,9 @@ func (db *SupabaseDB) DeleteTask(
 
 	if cmdTag.RowsAffected() == 0 {
 		return fmt.Errorf(
-			"Task %q does not exist",
-			id,
+			"Task %s %s",
+			ui.IDStyle.Render(id.String()),
+			ui.ErrStyle.Render("does not exist"),
 		)
 	}
 
@@ -630,7 +636,11 @@ func (db *SupabaseDB) UpdateTask(
 	}
 
 	if cmdTag.RowsAffected() == 0 {
-		return fmt.Errorf("Task %q does not exist", id)
+		return fmt.Errorf(
+			"Task %s %s",
+			ui.IDStyle.Render(id.String()),
+			ui.ErrStyle.Render("does not exist"),
+		)
 	}
 
 	return nil
@@ -676,7 +686,11 @@ func (db *SupabaseDB) CompleteTask(
 	}
 
 	if cmdTag.RowsAffected() == 0 {
-		return fmt.Errorf("Task %q does not exist", id)
+		return fmt.Errorf(
+			"Task %s %s",
+			ui.IDStyle.Render(id.String()),
+			ui.ErrStyle.Render("does not exist"),
+		)
 	}
 
 	return nil

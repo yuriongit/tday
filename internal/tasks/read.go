@@ -19,7 +19,7 @@ func ListAll(rootCtx context.Context, db app.Database) error {
 		return err
 	}
 
-	ui.TaskOutput.All(tasks)
+	ui.ColoredTaskOutput.All(tasks)
 
 	return nil
 }

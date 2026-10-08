@@ -9,41 +9,20 @@ import (
 	"github.com/yuriongit/tday/internal/domain"
 )
 
-// Task defines the structure for task output functions.
-type Task struct {
-	New      func(id *domain.ID)
-	All      func(t []domain.Task)
-	Update   func(id domain.ID)
-	Complete func(id domain.ID)
-	Remove   func(id domain.ID)
-}
-
 /*
-TaskOutput holds the functions responsible for any task-
-related output (besides input collection).
-*/
-var TaskOutput = Task{
-	New:      outputNewTask,
-	All:      outputAllTasks,
-	Update:   outputUpdatedTask,
-	Complete: outputCompleteTask,
-	Remove:   outputDeletedTask,
-}
-
-/*
-outputNewTask outputs the created task and it's
+uncoloredOutputNewTask outputs the created task and it's
 metadata in a formatted manner.
 */
-func outputNewTask(id *domain.ID) {
+func uncoloredOutputNewTask(id *domain.ID) {
 	fmt.Println("———————————————————————————————————")
-	fmt.Printf("✓ Task %q created successfully.\n", id)
+	fmt.Printf("✓ Task %q created\n", id)
 }
 
 /*
-outputAllTasks outputs all the persisted tasks in
+uncoloredOutputAllTasks outputs all the persisted tasks in
 a formatted manner.
 */
-func outputAllTasks(tasks []domain.Task) {
+func uncoloredOutputAllTasks(tasks []domain.Task) {
 	tasksAmt := len(tasks)
 
 	fmt.Printf(
@@ -82,17 +61,18 @@ func outputAllTasks(tasks []domain.Task) {
 }
 
 /*
-outputDeletedTask outputs the created task and it's
+uncoloredOutputDeletedTask outputs the created task and it's
 metadata in a formatted manner.
 */
-func outputDeletedTask(id domain.ID) {
-	fmt.Printf("✓ Task %q deleted successfully.\n", id)
+func uncoloredOutputDeletedTask(id domain.ID) {
+	fmt.Printf("✓ Task %q deleted\n", id)
 }
 
-func outputUpdatedTask(id domain.ID) {
-	fmt.Printf("✓ Task %q updated successfully.\n", id)
+func uncoloredOutputUpdatedTask(id domain.ID) {
+	fmt.Println(Divider)
+	fmt.Printf("✓ Task %q updated\n", id)
 }
 
-func outputCompleteTask(id domain.ID) {
-	fmt.Printf("✓ Task %q successfully marked as complete\n", id)
+func uncoloredOutputCompleteTask(id domain.ID) {
+	fmt.Printf("✓ Task %q marked as complete\n", id)
 }
