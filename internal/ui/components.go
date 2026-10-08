@@ -7,14 +7,14 @@ import "charm.land/lipgloss/v2"
 
 // Unicode symbols
 const (
-  checkMark = "✓"
-  _divider = "—————————————————————————————————————"
-  xSymbol = "✗"
-  ProgressSymbol = "◌"
-  PointerSymbol = "-—+>"
+	checkMark      = "✓"
+	_divider       = "—————————————————————————————————————"
+	xSymbol        = "✗"
+	ProgressSymbol = "◌"
+	PointerSymbol  = "-—+>"
 )
 
 // Styled components
 var (
-  Divider = lipgloss.NewStyle().Faint(true).Render(_divider)
+	Divider = lipgloss.NewStyle().Faint(true).Render(_divider)
 )

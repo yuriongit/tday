@@ -60,8 +60,8 @@ func Execute() {
 
 	err := rootCmd.Execute()
 	if err != nil {
-    errMsg := ui.ErrStyle.Render(fmt.Sprintf("✗ %s", err.Error())) + "\n"
-    fmt.Fprint(os.Stderr, errMsg)
+		errMsg := ui.ErrStyle.Render(fmt.Sprintf("✗ %s", err.Error())) + "\n"
+		fmt.Fprint(os.Stderr, errMsg)
 		return
 	}
 }

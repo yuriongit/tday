@@ -69,7 +69,7 @@ func uncoloredOutputDeletedTask(id domain.ID) {
 }
 
 func uncoloredOutputUpdatedTask(id domain.ID) {
-  fmt.Println(Divider)
+	fmt.Println(Divider)
 	fmt.Printf("✓ Task %q updated\n", id)
 }
 

@@ -686,11 +686,11 @@ func (db *SupabaseDB) CompleteTask(
 	}
 
 	if cmdTag.RowsAffected() == 0 {
-  	return fmt.Errorf(
-  		"Task %s %s",
-  		ui.IDStyle.Render(id.String()),
-  		ui.ErrStyle.Render("does not exist"),
-  	)
+		return fmt.Errorf(
+			"Task %s %s",
+			ui.IDStyle.Render(id.String()),
+			ui.ErrStyle.Render("does not exist"),
+		)
 	}
 
 	return nil

@@ -24,7 +24,7 @@ var UncoloredTaskOutput = TaskOutput{
 	Update:   uncoloredOutputUpdatedTask,
 	Complete: uncoloredOutputCompleteTask,
 	// TODO: Add AllCompleted
-	Remove:   uncoloredOutputDeletedTask,
+	Remove: uncoloredOutputDeletedTask,
 }
 
 /*
