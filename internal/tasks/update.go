@@ -47,15 +47,15 @@ func collectTaskUpdateInputs(
 			prevVal := (*prevTask.InputData)[string(fieldDef.ID)]
 
 			// Render the entire "Before" output block in red using git-style <<
-			beforeMsg := fmt.Sprintf("<< Before: %q", prevVal)
+			beforeMsg := fmt.Sprintf("  << Before: %q", prevVal)
 			fmt.Println(ui.RedOutput.Render(beforeMsg))
 
 			// Prompt line with >> arrows
 			fmt.Printf(
-				"%s %s:\n  %s ",
-				ui.UpdTaskFieldLabelStyle.Faint(true).Render("?"),
-				ui.UpdTaskFieldLabelStyle.Render(fieldDef.Name),
-				ui.GreenArrows,
+				"%s %s\n  %s ",
+				ui.NewTaskFieldLabelStyle.Faint(true).Render("?"),
+				ui.NewTaskFieldLabelStyle.Render(fieldDef.Name),
+				ui.BlueArrows,
 			)
 
 			if !scanner.Scan() {
