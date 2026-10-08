@@ -11,6 +11,7 @@ import (
 
 	"github.com/spf13/cobra"
 	app "github.com/yuriongit/tday/internal/app"
+	"github.com/yuriongit/tday/internal/ui"
 )
 
 var globalApp *app.App
@@ -59,7 +60,8 @@ func Execute() {
 
 	err := rootCmd.Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "✗ %s\n", err.Error())
+    errMsg := ui.ErrStyle.Render(fmt.Sprintf("✗ %s", err.Error())) + "\n"
+    fmt.Fprint(os.Stderr, errMsg)
 		return
 	}
 }
