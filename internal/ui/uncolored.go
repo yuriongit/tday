@@ -15,7 +15,7 @@ metadata in a formatted manner.
 */
 func uncoloredOutputNewTask(id *domain.ID) {
 	fmt.Println("———————————————————————————————————")
-	fmt.Printf("✓ Task %q created successfully.\n", id)
+	fmt.Printf("✓ Task %q created\n", id)
 }
 
 /*
@@ -65,13 +65,14 @@ uncoloredOutputDeletedTask outputs the created task and it's
 metadata in a formatted manner.
 */
 func uncoloredOutputDeletedTask(id domain.ID) {
-	fmt.Printf("✓ Task %q deleted successfully.\n", id)
+	fmt.Printf("✓ Task %q deleted\n", id)
 }
 
 func uncoloredOutputUpdatedTask(id domain.ID) {
-	fmt.Printf("✓ Task %q updated successfully.\n", id)
+  fmt.Println(Divider)
+	fmt.Printf("✓ Task %q updated\n", id)
 }
 
 func uncoloredOutputCompleteTask(id domain.ID) {
-	fmt.Printf("✓ Task %q successfully marked as complete\n", id)
+	fmt.Printf("✓ Task %q marked as complete\n", id)
 }
