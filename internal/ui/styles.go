@@ -4,42 +4,59 @@ Package ui provides the UI for TDay.
 package ui
 
 import (
+	"os"
+
 	lg "charm.land/lipgloss/v2"
 )
 
-// Lipgloss styles
+// Detect terminal background theme
+var (
+	HasDarkBG = lg.HasDarkBackground(os.Stdin, os.Stderr)
+	lightDark = lg.LightDark(HasDarkBG)
+)
+
+// Color definitions supporting dark and light themes dynamically
+var (
+	blueColor   = lightDark(lg.Color("#3D99FF"), lg.Color("#3D99FF"))
+	orangeColor = lightDark(lg.Color("#FF625C"), lg.Color("#FFA39E"))
+	greenColor  = lightDark(lg.Color("#00A305"), lg.Color("42"))
+	redColor    = lightDark(lg.Color("160"), lg.Color("#FF5B52"))
+
+	labelColor = lightDark(lg.Color("#FF6BB1"), lg.Color("#FF6BB1"))
+	descColor  = lightDark(lg.Color(""), lg.Color("#C2C2C2"))
+	mutedColor = lightDark(lg.Color("#9E9E9E"), lg.Color("252"))
+	titleColor = lightDark(lg.Color("#0D0D0D"), lg.Color("#FFF"))
+)
+
+// Lipgloss styles and rendered components
 var (
 	// Status indicators
-	BlueArrows   = lg.NewStyle().Foreground(lg.Blue).Bold(true).Render(">>")
-	YellowArrows = lg.NewStyle().Foreground(lg.Color("214")).Bold(true).Render("~>")
-	GreenArrows  = lg.NewStyle().Foreground(lg.Color("42")).Bold(true).Render(">>")
+	BlueArrow  = lg.NewStyle().Foreground(blueColor).Bold(true).Render(">")
+	BlueArrows = lg.NewStyle().Foreground(blueColor).Bold(true).Render(">>")
 
 	// Error indicator
-	ErrStyle = lg.NewStyle().Foreground(lg.Color("196")).Bold(true)
-	
+	ErrStyle = lg.NewStyle().Italic(true).Foreground(redColor).Bold(true)
+
 	// Labels & Metadata
-	NewTaskFieldLabelStyle = lg.NewStyle().Foreground(lg.Blue).Bold(true)
-	UpdTaskFieldLabelStyle = lg.NewStyle().Foreground(lg.Color("42")).Bold(true)
-	FieldLabelStyle = lg.NewStyle().Foreground(lg.Color("212")).Bold(true)
-	OptLabelStyle   = lg.NewStyle().Foreground(lg.Color("243")).Italic(true)
-	
+	NewTaskFieldLabelStyle = lg.NewStyle().Foreground(blueColor).Bold(true)
+	FieldLabelStyle        = lg.NewStyle().Foreground(labelColor).Bold(true)
+	OptLabelStyle          = lg.NewStyle().Foreground(mutedColor).Italic(true)
+
 	// ID
 	IDStyle = NewTaskFieldLabelStyle.Italic(true)
 
-	// Before output
-	RedOutput = lg.NewStyle().Foreground(lg.Color("196"))
+	// Before / Diff output
+	RedOutput = lg.NewStyle().Foreground(redColor)
 
 	// Marker symbols
-	GreenCheckmark = lg.NewStyle().Foreground(lg.Color("42")).Bold(true).Render(checkmark)
-	RedErrormark   = lg.NewStyle().Foreground(lg.Color("196")).Bold(true).Render(errormark)
+	GreenCheckMark = lg.NewStyle().Foreground(greenColor).Bold(true).Render(checkMark)
+	RedXSymbol     = lg.NewStyle().Foreground(redColor).Bold(true).Render(xSymbol)
 
 	// Task list styles
-	UUIDStyle  = lg.NewStyle().Foreground(lg.Color("63"))
-	LabelStyle = lg.NewStyle().Foreground(lg.Color("212")).Bold(true)
-	TitleStyle = lg.NewStyle().Bold(true)
-	MutedStyle = lg.NewStyle().Foreground(lg.Color("243"))
-	DescStyle  = lg.NewStyle().Foreground(lg.Color("252"))
-	DueStyle   = lg.NewStyle().Foreground(lg.Color("214"))
-	DoneStyle  = lg.NewStyle().Foreground(lg.Color("42"))
-	BoldNum    = lg.NewStyle().Bold(true)
+	TitleStyle = lg.NewStyle().Foreground(titleColor).Bold(true)
+	MutedStyle = lg.NewStyle().Foreground(mutedColor)
+	DescStyle  = lg.NewStyle().Foreground(descColor)
+	DueStyle   = lg.NewStyle().Bold(true).Foreground(orangeColor)
+	DoneStyle  = lg.NewStyle().Bold(true).Foreground(greenColor)
+	BoldNum    = lg.NewStyle().Foreground(titleColor).Bold(true)
 )
