@@ -11,6 +11,10 @@ import (
 
 // Update updates a task.
 func Update(rootCtx context.Context, id domain.ID, db *app.SupabaseDB) error {
+  if err := validateID(id); err != nil {
+  	return err
+  }
+
 	existingTask, err := db.QueryTask(rootCtx, id)
 	if err != nil {
 		return err

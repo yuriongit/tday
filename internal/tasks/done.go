@@ -17,6 +17,10 @@ func MarkDone(
 	id domain.ID,
 	db *app.SupabaseDB,
 ) error {
+  if err := validateID(id); err != nil {
+  	return err
+  }
+
 	if err := db.CompleteTask(rootCtx, id); err != nil {
 		return err
 	}

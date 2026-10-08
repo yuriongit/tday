@@ -10,6 +10,10 @@ import (
 
 // Remove removes a task by ID.
 func Remove(rootCtx context.Context, id domain.ID, db *app.SupabaseDB) error {
+  if err := validateID(id); err != nil {
+  	return err
+  }
+
 	if err := db.DeleteTask(rootCtx, id); err != nil {
 		return err
 	}
