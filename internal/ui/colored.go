@@ -49,13 +49,13 @@ func coloredOutputAllTasks(tasks []domain.Task) {
 		var renderedUUID, renderedLabel, renderedTitle string
 
 		if isCompleted {
-			renderedUUID = DoneStyle.Faint(true).Render(fmt.Sprintf("{%s}", uuid))
+			renderedUUID = DoneStyle.Faint(true).Render("{" + uuid.String() + "}")
 			renderedLabel = DoneStyle.Render("[" + label + "]:")
-			renderedTitle = DoneStyle.Render(fmt.Sprintf("%s", title))
+			renderedTitle = DoneStyle.Render(title)
 		} else {
-			renderedUUID = DueStyle.Faint(true).Render(fmt.Sprintf("{%s}", uuid))
+			renderedUUID = DueStyle.Faint(true).Render("{" + uuid.String() + "}")
 			renderedLabel = DueStyle.Render("[" + label + "]:")
-			renderedTitle = TitleStyle.Render(fmt.Sprintf("%s", title))
+			renderedTitle = TitleStyle.Render(title)
 		}
 
 		fmt.Printf(
@@ -86,9 +86,9 @@ func coloredOutputAllTasks(tasks []domain.Task) {
 		}
 
 		if desc != "" && !isCompleted {
-			fmt.Printf("  %s %s\n", MutedStyle.Render(">"), DescStyle.Render(fmt.Sprintf("%s", desc)))
+			fmt.Printf("  %s %s\n", MutedStyle.Render(">"), DescStyle.Render(desc))
 		} else if desc != "" {
-			fmt.Printf("  %s %s\n", MutedStyle.Render(">"), DescStyle.Render(fmt.Sprintf("%s", desc)))
+			fmt.Printf("  %s %s\n", MutedStyle.Render(">"), DescStyle.Render(desc))
 		}
 
 		if idx != tasksAmt-1 {
