@@ -1,3 +1,8 @@
+/*
+Package tasks offers the CRUD functionality for
+tasks, currently offers the functionality to
+create and read all tasks.
+*/
 package tasks
 
 import (
@@ -14,6 +19,6 @@ func validateID(id domain.ID) error {
 			domain.TaskIDLen,
 		)
 	}
-	
+
 	return nil
 }
