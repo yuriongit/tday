@@ -51,18 +51,18 @@ func collectTaskInputs(
 		for {
 			if !fieldDef.Required {
 				fmt.Printf(
-					"%s %s %s:\n  %s ",
+					"%s %s %s\n  %s ",
 					ui.NewTaskFieldLabelStyle.Faint(true).Render("?"),
 					ui.NewTaskFieldLabelStyle.Render(fieldDef.Name),
 					ui.OptLabelStyle.Render("(opt.)"),
-					ui.BlueArrows,
+					ui.BlueArrow,
 				)
 			} else {
 				fmt.Printf(
-					"%s %s:\n  %s ",
+					"%s %s\n  %s ",
 					ui.NewTaskFieldLabelStyle.Faint(true).Render("?"),
 					ui.NewTaskFieldLabelStyle.Render(fieldDef.Name),
-					ui.BlueArrows,
+					ui.BlueArrow,
 				)
 			}
 
