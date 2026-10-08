@@ -14,9 +14,9 @@ coloredOutputNewTask outputs the created task and its
 metadata in a formatted manner.
 */
 func coloredOutputNewTask(id *domain.ID) {
-  fmt.Println(Divider)
+	fmt.Println(Divider)
 	// Only the ">>" arrows are styled in green; remainder of the text is unstyled
-	fmt.Printf("%s Task %s created successfully.\n", GreenArrows, IDStyle.Render(id.String()))
+	fmt.Printf("%s Task %s created\n", GreenCheckMark, IDStyle.Render(id.String()))
 }
 
 /*
@@ -27,47 +27,68 @@ func coloredOutputAllTasks(tasks []domain.Task) {
 	tasksAmt := len(tasks)
 
 	fmt.Printf(
-		"%s total / %s remaining / %s complete\n",
-		BoldNum.Render(fmt.Sprintf("%d", tasksAmt)),
-		DueStyle.Render(fmt.Sprintf("%d", tasksAmt)),
-		DoneStyle.Render("0"), // TODO: When tasks can be marked as complete
+		"%s / %s / %s\n",
+		BoldNum.Render(fmt.Sprintf("%d total", tasksAmt)),
+		DueStyle.Render(fmt.Sprintf("%d remaining", tasksAmt)),
+		DoneStyle.Render("0 complete"), // TODO: When tasks can be marked as complete
 	)
 	fmt.Println(Divider)
 
 	for idx, task := range tasks {
-		label := (*task.InputData)[string(domain.LabelField)]
-		title := (*task.InputData)[string(domain.TitleField)]
-		desc := (*task.InputData)[string(domain.DescriptionField)]
-		dueAt := (*task.InputData)[string(domain.DueAtField)]
+		label, _ := (*task.InputData)[string(domain.LabelField)].(string)
+		title, _ := (*task.InputData)[string(domain.TitleField)].(string)
+		desc, _ := (*task.InputData)[string(domain.DescriptionField)].(string)
+		dueAt, _ := (*task.InputData)[string(domain.DueAtField)].(string)
 		completedAt := task.Metadata.CompletedAt
 		createdAt := task.Metadata.CreatedAt.Format(domain.TimeLayouts[1])
 		uuid := task.Metadata.UUID
 
-		fmt.Printf(
-			"%s %s: %s\n",
-			UUIDStyle.Render(fmt.Sprintf("{%s}", uuid)),
-			LabelStyle.Render(label.(string)),
-			TitleStyle.Render(fmt.Sprintf("%q", title)),
-		)
+		isCompleted := !completedAt.IsZero()
 
-		if desc != "" {
-			fmt.Printf("  %s Desc: %s\n", MutedStyle.Render(">"), DescStyle.Render(fmt.Sprintf("%q", desc)))
+		// Choose styles based on completion state
+		var renderedUUID, renderedLabel, renderedTitle string
+
+		if isCompleted {
+			renderedUUID = DoneStyle.Faint(true).Render(fmt.Sprintf("{%s}", uuid))
+			renderedLabel = DoneStyle.Render("[" + label + "]:")
+			renderedTitle = DoneStyle.Render(fmt.Sprintf("%s", title))
+		} else {
+			renderedUUID = DueStyle.Faint(true).Render(fmt.Sprintf("{%s}", uuid))
+			renderedLabel = DueStyle.Render("[" + label + "]:")
+			renderedTitle = TitleStyle.Render(fmt.Sprintf("%s", title))
 		}
 
-		if !completedAt.IsZero() {
+		fmt.Printf(
+			"%s %s %s\n",
+			renderedUUID,
+			renderedLabel,
+			renderedTitle,
+		)
+
+		// Time (Created at -> Completed at)
+		if isCompleted {
 			fmt.Printf(
-				"  %s Completed at: %s (%s)\n",
-				MutedStyle.Render(">"),
-				DoneStyle.Render(completedAt.Format(domain.TimeLayouts[1])),
-				MutedStyle.Render("Created at: "+createdAt),
+				"%s %s %s %s\n",
+				GreenCheckMark,
+				DoneStyle.Italic(true).Faint(true).Render("(start)", createdAt),
+				DoneStyle.Italic(true).Faint(true).Render(PointerSymbol),
+				DoneStyle.Italic(true).Render(completedAt.Format(domain.TimeLayouts[1]), "(done)"),
 			)
 		} else {
+			// Time (Created at -> Due at)
 			fmt.Printf(
-				"  %s Due at: %s (%s)\n",
-				MutedStyle.Render(">"),
-				DueStyle.Render(dueAt.(string)),
-				MutedStyle.Render("Created at: "+createdAt),
+				"%s %s %s %s\n",
+				DueStyle.Render(ProgressSymbol),
+				DueStyle.Italic(true).Faint(true).Render("(start)", createdAt),
+				DueStyle.Italic(true).Faint(true).Render(PointerSymbol),
+				DueStyle.Italic(true).Render(dueAt, "(due)"),
 			)
+		}
+
+		if desc != "" && !isCompleted {
+			fmt.Printf("  %s %s\n", MutedStyle.Render(">"), DescStyle.Render(fmt.Sprintf("%s", desc)))
+		} else if desc != "" {
+			fmt.Printf("  %s %s\n", MutedStyle.Render(">"), DescStyle.Render(fmt.Sprintf("%s", desc)))
 		}
 
 		if idx != tasksAmt-1 {
@@ -81,14 +102,15 @@ coloredOutputDeletedTask outputs the deleted task state with
 git-style "<<" prefix and the entire message rendered red.
 */
 func coloredOutputDeletedTask(id domain.ID) {
-	msg := fmt.Sprintf("%s Task %s deleted successfully.", GreenCheckmark, fmt.Sprintf("%q", IDStyle.Render(id.String())))
+	msg := fmt.Sprintf("%s Task %s deleted", GreenCheckMark, IDStyle.Render(id.String()))
 	fmt.Println(RedOutput.Render(msg))
 }
 
 func coloredOutputUpdatedTask(id domain.ID) {
-  fmt.Printf("%s Task %s updated successfully.\n", YellowArrows, fmt.Sprintf("%q", IDStyle.Render(id.String())))
+	fmt.Println(Divider)
+	fmt.Printf("%s Task %s updated\n", GreenCheckMark, IDStyle.Render(id.String()))
 }
 
 func coloredOutputCompleteTask(id domain.ID) {
-	fmt.Printf("%s Task %s successfully marked as complete\n", GreenCheckmark, fmt.Sprintf("%q", IDStyle.Render(id.String())))
+	fmt.Printf("%s Task %s marked as complete\n", GreenCheckMark, IDStyle.Render(id.String()))
 }
