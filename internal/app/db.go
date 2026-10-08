@@ -542,13 +542,6 @@ func (db *SupabaseDB) DeleteTask(
 	)
 	defer cancel()
 
-	if len(id) != domain.TaskIDLen {
-		return fmt.Errorf(
-			"Invalid task ID: task ID must be %d characters",
-			domain.TaskIDLen,
-		)
-	}
-
 	cmdTag, err := db.Pool.Exec(
 		ctx,
 		`DELETE FROM "tasks" WHERE "uuid" = $1`,

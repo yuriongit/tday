@@ -1,3 +1,8 @@
+/*
+Package tasks offers the CRUD functionality for
+tasks, currently offers the functionality to
+create and read all tasks.
+*/
 package tasks
 
 import (
@@ -17,6 +22,10 @@ func MarkDone(
 	id domain.ID,
 	db *app.SupabaseDB,
 ) error {
+	if err := validateID(id); err != nil {
+		return err
+	}
+
 	if err := db.CompleteTask(rootCtx, id); err != nil {
 		return err
 	}
