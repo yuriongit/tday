@@ -431,7 +431,11 @@ func (db *SupabaseDB) QueryTask(
 	}
 
 	if len(tasks) == 0 {
-		return nil, fmt.Errorf("No task found with UUID: %s", id)
+		return nil, fmt.Errorf(
+			"Task %s %s",
+			ui.IDStyle.Render(id.String()),
+			ui.ErrStyle.Render("does not exist"),
+		)
 	}
 
 	return &tasks[0], nil
